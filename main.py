@@ -165,16 +165,17 @@ with col_left:
         marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
         textinfo='percent+label'
     )])
-  fig_left.update_layout(
-    title=dict(
-        text="Struktura ceny sprzedaży", 
-        x=0.5, 
-        font=dict(family="Montserrat", size=18) # Dodaj tę linię
-    ),
-    font=dict(family="Montserrat"), # To zmieni czcionkę etykiet i legendy
-    margin=dict(t=80, b=50, l=10, r=10), 
-    height=450, 
-    showlegend=False
+    fig_left.update_layout(
+        title=dict(
+            text="Struktura ceny sprzedaży", 
+            x=0.5,
+            font=dict(family="Montserrat", size=16)
+        ),
+        font=dict(family="Montserrat"),
+        margin=dict(t=80, b=50, l=10, r=10), 
+        height=450, 
+        showlegend=False
+    )
 )
     )
     st.plotly_chart(fig_left, use_container_width=True)
