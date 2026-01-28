@@ -12,10 +12,10 @@ st.set_page_config(
 
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
-<link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">  
     
    /* Wyraźne przyciski plus/minus w polach numerycznych */
     button[data-testid="stNumberInputStepUp"], 
