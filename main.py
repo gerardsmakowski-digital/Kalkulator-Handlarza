@@ -2,37 +2,23 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Konfiguracja strony - wymuszamy rozwinięty sidebar na start
+# DODANO: initial_sidebar_state="expanded" - to wymusi wysunięcie paska przy starcie
 st.set_page_config(
     page_title="Kalkulator Handlarza - Gerard S.", 
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded" 
 )
 
-# --- CSS (Stylizacja Montserrat + Naprawa przycisku Sidebaru) ---
+# --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
     
-    /* Ukrywamy logo Streamlit i stopkę, ale zostawiamy przycisk sidebaru */
-    #MainMenu { visibility: hidden; }
-    footer { visibility: hidden; }
-    
-    /* STYLIZACJA STRZAŁKI SIDEBARU */
-    /* Gdy sidebar jest OTWARTY (biała strzałka na czarnym tle) */
-    [data-testid="stSidebarCollapsedControl"] {
-        color: #000000 !important;
-        background-color: rgba(255,255,255,0.5);
-        border-radius: 0 5px 5px 0;
-    }
-    
-    /* Gdy sidebar jest ZAMKNIĘTY (strzałka do rozwijania) */
-    button[kind="headerNoPadding"] {
-        color: #ffffff !important;
-    }
+    /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
+    footer, #MainMenu { visibility: hidden !important; }
 
-    /* Sidebar - tło i czcionki */
+    /* Sidebar */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
@@ -114,7 +100,7 @@ suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_laki
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-przychod_roznica = cena_sprzedazy - suma_wydatki 
+przychod_roznica = cena_sprzedazy - suma_wydatki # Przychód
 
 if przychod_roznica > 0:
     vat_kwota = przychod_roznica * (0.23 / 1.23)
@@ -126,7 +112,7 @@ else:
     vat_kwota = podatek_dochodowy = skladka_zdrowotna = 0
 
 podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
-dochod_na_czysto = przychod_roznica - podatki_razem 
+dochod_na_czysto = przychod_roznica - podatki_razem # Dochód
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
@@ -136,6 +122,7 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
+    # KOŁOWY PO LEWEJ
     labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
     values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
     
@@ -148,9 +135,9 @@ with col_left:
     )])
     fig_left.update_layout(
         title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
-        margin=dict(t=80, b=80, l=10, r=10), # Zwiększony margines dolny b=80
-        height=480, # Zwiększona wysokość
-        showlegend=False 
+        margin=dict(t=80, b=50, l=10, r=10), 
+        height=450, 
+        showlegend=False
     )
     st.plotly_chart(fig_left, use_container_width=True)
 
@@ -169,6 +156,7 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
+    # SŁUPKOWY PO PRAWEJ
     data_bars = {
         'Przychód': przychod_roznica,
         'Dochód': dochod_na_czysto,
@@ -186,8 +174,8 @@ with col_right:
     ])
     fig_right.update_layout(
         title=dict(text="Wynik finansowy (PLN)", x=0.5, y=0.95, xanchor='center'),
-        height=480, 
-        margin=dict(t=80, b=80, l=10, r=10),
+        height=450, 
+        margin=dict(t=80, b=50, l=10, r=10),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
