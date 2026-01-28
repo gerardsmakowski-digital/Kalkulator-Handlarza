@@ -34,11 +34,14 @@ st.markdown("""
         background-color: #990000 !important;
     }
 
-    /* 4. Naprawa ikon sidebaru */
-    [data-testid="stBaseButton-headerNoPadding"] span, 
-    [data-testid="stExpandSidebarButton"] span {
-        font-family: "Material Symbols Rounded" !important;
-    }
+/* 4. Kolory ikon zależnie od stanu (otwarty/zamknięty) */
+[data-testid="stBaseButton-headerNoPadding"] span {
+    color: #ffffff !important; /* Biała ikona wewnątrz paska */
+}
+
+[data-testid="stExpandSidebarButton"] span {
+    color: #000 !important; /* Ciemna ikona na zewnątrz paska */
+}
 
     header[data-testid="stHeader"] { visibility: hidden; height: 0px; }
     footer { visibility: hidden !important; }
