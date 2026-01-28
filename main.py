@@ -3,39 +3,21 @@ import pandas as pd
 import plotly.graph_objects as go
 
 # Konfiguracja strony
-st.set_page_config(
-    page_title="Kalkulator Handlarza - Gerard S.", 
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (PRECYZYJNA NAPRAWA FONTU) ---
+# --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    
-    /* Zmieniamy Montserrat tylko tam, gdzie nie ma ikon */
-    html, body, [class*="st-"] {
-        font-family: 'Montserrat', sans-serif !important;
-    }
+    * { font-family: 'Montserrat', sans-serif !important; }
+    header, footer, #MainMenu { visibility: hidden !important; }
 
-    /* Ochrona ikon Streamlita przed nadpisaniem fontu */
-    .material-icons, 
-    [data-testid="stIcon"], 
-    [class^="StyledIcon"],
-    [class*="MaterialIcon"] {
-        font-family: 'Material Icons' !important;
-    }
-    
-    /* Nagłówek - czysty i przezroczysty */
-    header { background-color: rgba(0,0,0,0) !important; }
-    [data-testid="stHeader"] { background-color: rgba(0,0,0,0) !important; }
-    #MainMenu, footer { visibility: hidden !important; }
-
-    /* Sidebar - Kolory */
+    /* Sidebar */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
+    
+    .stCheckbox label, .stRadio label { font-size: 14px !important; font-weight: normal !important; }
 
     /* Dashboard Cards */
     .metric-card { 
@@ -59,10 +41,7 @@ st.markdown("""
 # --- SIDEBAR ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
-    try:
-        st.image("logo gerard s białe .png", width=180)
-    except:
-        st.write("### GERARD S")
+    st.image("logo gerard s białe .png", width=180)
     
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
     cena_eur = st.number_input("Cena auta w EURO", value=3550.0)
@@ -105,7 +84,7 @@ with st.sidebar:
     st.markdown("---")
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
 
-# --- OBLICZENIA (Bez zmian) ---
+# --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
 wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
@@ -115,7 +94,7 @@ suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_laki
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-przychod_roznica = cena_sprzedazy - suma_wydatki 
+przychod_roznica = cena_sprzedazy - suma_wydatki # Przychód
 
 if przychod_roznica > 0:
     vat_kwota = przychod_roznica * (0.23 / 1.23)
@@ -127,7 +106,7 @@ else:
     vat_kwota = podatek_dochodowy = skladka_zdrowotna = 0
 
 podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
-dochod_na_czysto = przychod_roznica - podatki_razem 
+dochod_na_czysto = przychod_roznica - podatki_razem # Dochód
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
@@ -137,14 +116,23 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
+    # KOŁOWY PO LEWEJ: Wyższe height, żeby nie ucinało
+    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
+    values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
+    
     fig_left = go.Figure(data=[go.Pie(
-        labels=['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód'], 
-        values=[finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica], 
+        labels=labels_pie, 
+        values=values_pie, 
         hole=.4, 
         marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
         textinfo='percent+label'
     )])
-    fig_left.update_layout(title=dict(text="Struktura ceny sprzedaży", x=0.5), height=500, showlegend=False)
+    fig_left.update_layout(
+        title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
+        margin=dict(t=80, b=50, l=10, r=10), 
+        height=450, 
+        showlegend=False # Etykiety są na wykresie, oszczędzamy miejsce na dole
+    )
     st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
@@ -162,12 +150,30 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    fig_right = go.Figure(data=[go.Bar(
-        x=['Przychód', 'Dochód', 'VAT', 'Podatek', 'Zdrowotna'], 
-        y=[przychod_roznica, dochod_na_czysto, vat_kwota, podatek_dochodowy, skladka_zdrowotna],
-        marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
-    )])
-    fig_right.update_layout(title=dict(text="Wynik finansowy (PLN)", x=0.5), height=500)
+    # SŁUPKOWY PO PRAWEJ
+    data_bars = {
+        'Przychód': przychod_roznica,
+        'Dochód': dochod_na_czysto,
+        'VAT': vat_kwota,
+        'Podatek': podatek_dochodowy,
+        'Zdrowotna': skladka_zdrowotna
+    }
+    
+    fig_right = go.Figure(data=[
+        go.Bar(
+            x=list(data_bars.keys()), 
+            y=list(data_bars.values()),
+            marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
+        )
+    ])
+    fig_right.update_layout(
+        title=dict(text="Wynik finansowy (PLN)", x=0.5, y=0.95, xanchor='center'),
+        height=450, 
+        margin=dict(t=80, b=50, l=10, r=10),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
+    )
     st.plotly_chart(fig_right, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -183,13 +189,22 @@ with t1:
         <div class='row'><span>Lakiernik</span><span>{koszt_lakiernika:,.2f} zł</span></div>
         <div class='row'><span>Mechanik</span><span>{mechanik:,.2f} zł</span></div>
         <div class='row'><span>Części</span><span>{cena_czesci:,.2f} zł</span></div>
+        <div class='row'><span>Przegląd</span><span>{koszt_prz:,.2f} zł</span></div>
+        <div class='row'><span>Rejestracja</span><span>{koszt_rej:,.2f} zł</span></div>
+        <div class='row'><span>Myjnia</span><span>{myjnia:,.2f} zł</span></div>
+        <div class='row'><span>Ogłoszenia</span><span>{ogloszenia:,.2f} zł</span></div>
+        <div class='row'><span>Pozostałe</span><span>{pozostale:,.2f} zł</span></div>
         <div class='total-row' style='color:#000;'><span>SUMA WYDATKÓW</span><span>{suma_wydatki:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
 
 with t2:
+    # Poprawione nazewnictwo: Przychód i Dochód
     st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Przychód</span><span>{przychod_roznica:,.2f} zł</span></div>
         <div class='row'><span>Dochód</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
+        <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
+        <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
+        <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
         <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
