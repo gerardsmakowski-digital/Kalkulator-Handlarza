@@ -15,7 +15,7 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-html, body, .stApp, .stApp *:not(.material-icons):not([class*="material-icons"]) {
+html, body (.material-icons):not([class*="material-icons"]) {
     font-family: 'Montserrat', sans-serif !important;
 }
    
