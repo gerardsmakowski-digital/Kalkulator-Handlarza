@@ -2,42 +2,46 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Konfiguracja strony - wymuszamy rozwinięty sidebar na start
+# Konfiguracja strony
 st.set_page_config(
     page_title="Kalkulator Handlarza - Gerard S.", 
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# --- CSS (Stylizacja Montserrat + Naprawa przycisku Sidebaru) ---
+# --- CSS (KOMPLEKSOWA NAPRAWA STRZAŁKI I WYKRESU) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
     
-    /* Ukrywamy logo Streamlit i stopkę, ale zostawiamy przycisk sidebaru */
-    #MainMenu { visibility: hidden; }
-    footer { visibility: hidden; }
-    
-    /* STYLIZACJA STRZAŁKI SIDEBARU */
-    /* Gdy sidebar jest OTWARTY (biała strzałka na czarnym tle) */
-    [data-testid="stSidebarCollapsedControl"] {
-        color: #000000 !important;
-        background-color: rgba(255,255,255,0.5);
-        border-radius: 0 5px 5px 0;
-    }
-    
-    /* Gdy sidebar jest ZAMKNIĘTY (strzałka do rozwijania) */
-    button[kind="headerNoPadding"] {
-        color: #ffffff !important;
+    /* Ukrycie śmieci, ale zostawienie przycisku sterowania */
+    header { background-color: rgba(0,0,0,0) !important; }
+    [data-testid="stHeader"] { background-color: rgba(0,0,0,0) !important; }
+    #MainMenu, footer { visibility: hidden !important; }
+
+    /* --- NAPRAWA STRZAŁKI SIDEBARU --- */
+    /* Kolor strzałki gdy sidebar jest ZAMKNIĘTY (widoczna na białym tle) */
+    [data-testid="stSidebarCollapsedControl"] svg {
+        fill: #000000 !important;
+        width: 30px !important;
+        height: 30px !important;
     }
 
-    /* Sidebar - tło i czcionki */
+    /* Kolor strzałki gdy sidebar jest OTWARTY (widoczna na czarnym tle) */
+    [data-testid="stSidebar"] button svg {
+        fill: #ffffff !important;
+    }
+
+    /* Usunięcie ewentualnych tekstów zamiast ikon */
+    [data-testid="stSidebarCollapsedControl"] {
+        font-size: 0px !important;
+    }
+
+    /* Sidebar - Kolory */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
-    
-    .stCheckbox label, .stRadio label { font-size: 14px !important; font-weight: normal !important; }
 
     /* Dashboard Cards */
     .metric-card { 
@@ -148,8 +152,8 @@ with col_left:
     )])
     fig_left.update_layout(
         title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
-        margin=dict(t=80, b=80, l=10, r=10), # Zwiększony margines dolny b=80
-        height=480, # Zwiększona wysokość
+        margin=dict(t=80, b=100, l=10, r=10), # Duży margines b=100
+        height=500, # Jeszcze wyższy dla pewności
         showlegend=False 
     )
     st.plotly_chart(fig_left, use_container_width=True)
@@ -186,8 +190,8 @@ with col_right:
     ])
     fig_right.update_layout(
         title=dict(text="Wynik finansowy (PLN)", x=0.5, y=0.95, xanchor='center'),
-        height=480, 
-        margin=dict(t=80, b=80, l=10, r=10),
+        height=500, 
+        margin=dict(t=80, b=100, l=10, r=10),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
