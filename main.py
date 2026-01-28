@@ -221,7 +221,7 @@ with col_right:
     margin=dict(t=80, b=50, l=10, r=10),
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-        text-align: center'
+    text-align: center
 )
     
     st.plotly_chart(fig_right, use_container_width=True)
