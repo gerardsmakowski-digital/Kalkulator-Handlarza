@@ -256,7 +256,9 @@ with col_right:
     
 )
     
-    st.plotly_chart(fig_right, use_container_width=True)
+    with col_right:
+    # BLOKADA WYKRESU SŁUPKOWEGO (staticPlot: True wyłącza zoom i przesuwanie)
+    st.plotly_chart(fig_right, use_container_width=True, config={'displayModeBar': False, 'staticPlot': True})
 
 st.markdown("<br>", unsafe_allow_html=True)
 
