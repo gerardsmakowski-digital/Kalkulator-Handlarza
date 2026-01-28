@@ -17,7 +17,6 @@ st.markdown("""
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
     
-    /* Naprawa wyrównania checkboxa i radio */
     .stCheckbox label, .stRadio label { font-size: 14px !important; font-weight: normal !important; }
 
     /* Dashboard Cards */
@@ -94,6 +93,9 @@ koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
 suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + 
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
+# Wyliczenie "Pozostałych" kosztów (wszystko poza autem i akcyzą)
+pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
+
 przychod_roznica = cena_sprzedazy - suma_wydatki
 
 if przychod_roznica > 0:
@@ -118,20 +120,21 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2, 3, 2])
 
 with col_left:
-    # Przygotowanie danych do lewego wykresu i sortowanie od najwyższej do najniższej
+    # Przygotowanie danych do lewego wykresu
     data_bars = {
-        'Auto': finalna_cena_samochodu,
+        'Suma wydatków': suma_wydatki,
+        'Samochód': finalna_cena_samochodu,
         'Akcyza': wartosc_akcyzy,
-        'Transport': transport,
-        'Zysk': przychod_roznica
+        'Pozostałe': pozostale_suma
     }
+    # Sortowanie od najwyższej do najniższej kwoty
     sorted_bars = dict(sorted(data_bars.items(), key=lambda item: item[1], reverse=True))
     
     fig_left = go.Figure(data=[
         go.Bar(
             x=list(sorted_bars.keys()), 
             y=list(sorted_bars.values()),
-            marker_color=['#8B0000', '#B22222', '#DC143C', '#FF4D4D'] # Odcienie czerwieni (ciemny -> jasny)
+            marker_color=['#FF0000', '#CC0000', '#990000', '#660000'] # Gradient czerwieni od lewej do prawej
         )
     ])
     fig_left.update_layout(
