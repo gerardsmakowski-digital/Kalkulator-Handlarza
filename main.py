@@ -12,13 +12,7 @@ st.set_page_config(
 # --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
-    @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded");
-
-span[class*="material"],
-[data-testid="stIconMaterial"] span {
-    font-family: 'Material Symbols Rounded' !important;
-}
-    
+ 
     /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
     footer, #MainMenu { visibility: hidden !important; }
 
