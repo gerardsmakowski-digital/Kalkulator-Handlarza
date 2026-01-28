@@ -207,7 +207,7 @@ with col_left:
     )
 
    
-    st.plotly_chart(fig_left, use_container_width=True)
+    st.plotly_chart(fig_right, use_container_width=True, config={'displayModeBar': False, 'staticPlot': True})
 
 with col_mid:
     r1_1, r1_2 = st.columns(2)
