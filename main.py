@@ -5,25 +5,30 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- SIŁOWY CSS (Wymuszenie Montserrat na absolutnie wszystkim) ---
+# --- KOMPLEKSOWY CSS (Usuwanie błędów i wymuszenie czcionki) ---
 st.markdown("""
     <style>
-    /* 1. Import czcionki */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     
-    /* 2. Globalne uderzenie we wszystkie tagi */
-    * {
+    /* Globalne wymuszenie czcionki na absolutnie wszystkim */
+    html, body, [class*="css"], .stMarkdown, p, span, label, input, button, div {
         font-family: 'Montserrat', sans-serif !important;
     }
 
-    /* 3. Uderzenie w specyficzne klasy Streamlit (wejścia, radio, etykiety) */
-    .stMarkdown, .stNumberInput, .stRadio, .stCheckbox, .stSelectbox, div, span, label, input, button {
-        font-family: 'Montserrat', sans-serif !important;
+    /* Ukrycie technicznych napisów (jak keyboard_double) i zbędnych elementów menu */
+    #MainMenu, footer, [data-testid="stSidebarNav"] {
+        display: none !important;
+    }
+    
+    /* Usunięcie niechcianych napisów tekstowych ikon */
+    .st-emotion-cache-10oheav, .st-emotion-cache-6q9sum {
+        visibility: hidden !important;
     }
 
-    /* 4. Naprawa czcionki wewnątrz pól numerycznych i ich etykiet */
-    input[type="number"], .st-bc, .st-ae, .st-af, .st-ag {
+    /* Wymuszenie Montserrat w polach do wpisywania liczb */
+    input[type=number] {
         font-family: 'Montserrat', sans-serif !important;
+        font-size: 16px !important;
     }
 
     /* Ciemny sidebar */
@@ -34,7 +39,6 @@ st.markdown("""
     }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { 
         color: #ffffff !important; 
-        font-family: 'Montserrat', sans-serif !important;
     }
 
     /* Karty i tabele */
@@ -48,8 +52,10 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (Kolejność ze screena) ---
+# --- SIDEBAR ---
 with st.sidebar:
+    # Podciągnięcie loga wyżej
+    st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
     st.markdown("<br>", unsafe_allow_html=True)
     
