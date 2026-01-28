@@ -121,7 +121,20 @@ with st.sidebar:
     pozostale = st.number_input("Pozostałe", value=200)
     
     st.markdown("---")
-    cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
+   # ... (wcześniejszy kod sidebaru)
+    cena_sprzedazy = st.number_input("CENA SPRZEDAŻY AUTA", value=35000)
+
+    # DODATEK NA SAMYM DOLE:
+    st.markdown("---") # Linia oddzielająca
+    st.markdown(
+        """
+        <div style='text-align: center; padding-top: 20px;'>
+            <p style='font-size: 12px; color: #666; margin-bottom: 5px;'>Więcej narzędzi na:</p>
+            <a href='https://gerard-s.pl' target='_blank' style='color: #cc0000; text-decoration: none; font-weight: bold; font-size: 14px;'>www.gerard-s.pl</a>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
 
 # --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
