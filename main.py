@@ -5,28 +5,43 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CUSTOM CSS (Odwzorowanie wyglądu arkusza) ---
+# --- CUSTOM CSS (Czcionka Montserrat i białe napisy) ---
 st.markdown("""
     <style>
-    /* Ciemny sidebar */
-    [data-testid="stSidebar"] { background-color: #111111; color: white; border-right: 1px solid #333; }
-    [data-testid="stSidebar"] .stMarkdown { color: white; }
-    
-    /* Karty wyników (Górne boxy) */
+    /* Import czcionki Montserrat z Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    /* Zastosowanie czcionki do całej aplikacji */
+    html, body, [class*="css"], .stMarkdown, p, span {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* Ciemny sidebar i białe napisy opisów */
+    [data-testid="stSidebar"] {
+        background-color: #111111;
+        color: #ffffff !important; /* Wymuszenie białego koloru */
+        border-right: 1px solid #333;
+    }
+
+    /* Zmiana koloru etykiet (Label) nad polami wpisywania w sidebarze */
+    [data-testid="stSidebar"] label {
+        color: #ffffff !important;
+        font-weight: 400;
+    }
+
+    /* Napisy wewnątrz expanderów w sidebarze */
+    [data-testid="stSidebar"] .st-expander p {
+        color: #ffffff !important;
+    }
+
+    /* Reszta stylizacji kart wyników */
     .metric-card {
         background-color: white; padding: 20px; border-radius: 5px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd;
         text-align: center; margin-bottom: 10px;
+        font-family: 'Montserrat', sans-serif;
     }
-    .metric-label { font-size: 14px; color: #666; font-weight: bold; }
     .metric-value { font-size: 24px; color: #000; font-weight: bold; }
-    
-    /* Tabele podsumowujące */
-    .summary-table { width: 100%; border-collapse: collapse; background: white; }
-    .table-header { background-color: #cc0000; color: white; padding: 10px; font-weight: bold; text-align: left; }
-    .table-row { border-bottom: 1px solid #eee; }
-    .table-cell { padding: 8px; font-size: 14px; }
-    .total-row { font-weight: bold; color: #28a745; border-top: 2px solid #eee; }
     </style>
     """, unsafe_allow_html=True)
 
