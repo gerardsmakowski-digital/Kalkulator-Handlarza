@@ -20,7 +20,7 @@ st.markdown("""
 }
 
 /* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
-[data-testid="stHeader"] [data-testid="stBaseButton-headerNoPadding"] {
+[data-testid="stExpandSidebarButton"] [data-testid="stBaseButton-headerNoPadding"] {
     color: #000 !important;
 }
 
