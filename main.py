@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (Niezmienny, sprawdzony układ) ---
+# --- CSS (Stabilny układ) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
@@ -33,20 +33,15 @@ with st.sidebar:
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
     cena_eur = st.number_input("Cena auta w EURO", value=0.0)
     
-    # LOGIKA PRZELICZANIA
     kwota_z_euro = cena_eur * kurs_eur
-    
     if cena_eur > 0:
         st.markdown(f"<p style='font-size: 12px; color: #28a745; margin-top: -15px;'>Przeliczono z Euro: {kwota_z_euro:,.2f} zł</p>", unsafe_allow_html=True)
-        # Jeśli Euro uzupełnione, PLN staje się tylko podglądem/nadpisaniem
         cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_z_euro))
     else:
-        # Jeśli Euro puste (0), bierzemy czyste PLN
+        st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -15px;'>Wpisz kwotę w PLN poniżej</p>", unsafe_allow_html=True)
         cena_pln_auto = st.number_input("Cena auta w PLN", value=0.0)
 
-    # Finalna kwota samochodu do tabeli (zmienna pomocnicza)
     finalna_cena_samochodu = cena_pln_auto
-
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(finalna_cena_samochodu))
     
     st.markdown("---")
@@ -64,11 +59,11 @@ with st.sidebar:
     
     st.markdown("---")
     transport = st.number_input("Transport", value=1700)
-    cena_lakieru = st.number_input("Cena lakierowania (element)", value=500)
-    ilosc_lakieru = st.number_input("Ilość elementów", value=0)
+    cena_lakieru = st.number_input("Lakier/elem", value=500)
+    ilosc_lakieru = st.number_input("Ilość elem", value=0)
     koszt_lakiernika = cena_lakieru * ilosc_lakieru
     
-    cena_czesci = st.number_input("Cena części", value=300)
+    cena_czesci = st.number_input("Części", value=300)
     mechanik = st.number_input("Mechanik", value=700)
     myjnia = st.number_input("Myjnia", value=200)
     ogloszenia = st.number_input("Ogłoszenia", value=300)
@@ -77,32 +72,40 @@ with st.sidebar:
     st.markdown("---")
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
 
-# --- OBLICZENIA KOŃCOWE ---
+# --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
 wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
 koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
-
-suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + 
-                cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
-
+suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 dochod = cena_sprzedazy - suma_wydatki
 marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
-# --- PANEL GŁÓWNY (Tabela wydatków zgodna z Twoją listą) ---
-st.markdown(f"<h2 style='text-align: center; margin-top: -30px;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 40px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
+# --- PANEL GŁÓWNY ---
+st.markdown(f"<h2 style='text-align: center; margin-top: -30px; margin-bottom: 0;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 40px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
-# Sekcja Dashboard (Metryki)
-m1, m2, m3, m4 = st.columns(4)
-m1.markdown(f"<div class='metric-card'><div class='metric-label'>Auto</div><div class='metric-value'>{finalna_cena_samochodu:,.0f} zł</div></div>", unsafe_allow_html=True)
-m2.markdown(f"<div class='metric-card'><div class='metric-label'>Koszty dodatkowe</div><div class='metric-value'>{suma_wydatki - finalna_cena_samochodu:,.0f} zł</div></div>", unsafe_allow_html=True)
-m3.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk</div><div class='metric-value' style='color:#28a745;'>{dochod:,.0f} zł</div></div>", unsafe_allow_html=True)
-m4.markdown(f"<div class='metric-card'><div class='metric-label'>Marża</div><div class='metric-value'>{marza_proc:.1f}%</div></div>", unsafe_allow_html=True)
+# Dashboard - 3 Kolumny
+c1, c2, c3 = st.columns([1.5, 2, 1.5])
+with c1:
+    st.bar_chart(pd.DataFrame({'PLN': [finalna_cena_samochodu, wartosc_akcyzy, transport, dochod]}, index=['Auto', 'Akcyza', 'Transport', 'Zysk']))
 
+with c2:
+    m1, m2 = st.columns(2)
+    m1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value'>{cena_sprzedazy:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m3, m4 = st.columns(2)
+    m3.markdown(f"<div class='metric-card'><div class='metric-label'>Vat (23%)</div><div class='metric-value' style='font-size:18px;'>{(dochod*0.23):,.0f} zł</div></div>", unsafe_allow_html=True)
+    m4.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:18px;'>130 zł</div></div>", unsafe_allow_html=True)
+
+with c3:
+    fig = go.Figure(data=[go.Pie(labels=['Auto', 'Akcyza', 'Inne'], values=[finalna_cena_samochodu, wartosc_akcyzy, suma_wydatki-finalna_cena_samochodu-wartosc_akcyzy], hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=220, showlegend=False)
+    st.plotly_chart(fig, use_container_width=True)
+
+# Tabele Podsumowania - 2 Kolumny
 st.markdown("<br>", unsafe_allow_html=True)
-t1, t2 = st.columns([1.5, 1])
-
+t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - podsumowanie</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
@@ -121,9 +124,9 @@ with t1:
     </div>""", unsafe_allow_html=True)
 
 with t2:
-    # Wykres kołowy wydatków
-    fig = go.Figure(data=[go.Pie(labels=['Auto', 'Opłaty/Akcyza', 'Naprawy/Inne'], 
-                                 values=[finalna_cena_samochodu, wartosc_akcyzy + koszt_rej + koszt_prz, suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy], 
-                                 hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
-    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=350, showlegend=True)
-    st.plotly_chart(fig, use_container_width=True)
+    st.markdown("<div class='table-header'>Przychody - podsumowanie</div>", unsafe_allow_html=True)
+    st.markdown(f"""<div class='table-container'>
+        <div class='row'><span>Przychód</span><span>{cena_sprzedazy:,.2f} zł</span></div>
+        <div class='row'><span>Dochód</span><span>{dochod:,.2f} zł</span></div>
+        <div class='total-row' style='color:#000;'><span>Marża</span><span>{marza_proc:.1f}%</span></div>
+    </div>""", unsafe_allow_html=True)
