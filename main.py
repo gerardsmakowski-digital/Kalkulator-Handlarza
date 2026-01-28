@@ -101,7 +101,7 @@ marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
 # --- PANEL GŁÓWNY ---
 st.markdown(f"<h2 style='text-align: center; margin-bottom: 0;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 30px; margin-top:10px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 30px; margin-top:-20px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
 c1, c2, c3 = st.columns([1.5, 2, 1.5])
 with c1:
