@@ -13,13 +13,8 @@ st.set_page_config(
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
+    
    
-  /* 1. Gdy sidebar jest OTWARTY - biała ikona na czarnym tle */
-.st-emotion-cache {
-    color: white !important;
-}
 
 /* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
 [data-testid="stExpandSidebarButton"]  span {
