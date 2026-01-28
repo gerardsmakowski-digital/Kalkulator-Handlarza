@@ -38,7 +38,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (Wprowadzanie danych) ---
+# --- SIDEBAR ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
@@ -94,7 +94,7 @@ suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_laki
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-przychod_roznica = cena_sprzedazy - suma_wydatki # Zysk Brutto
+przychod_roznica = cena_sprzedazy - suma_wydatki
 
 if przychod_roznica > 0:
     vat_kwota = przychod_roznica * (0.23 / 1.23)
@@ -116,8 +116,8 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
-    # KOŁOWY PO LEWEJ: Struktura Ceny Sprzedaży
-    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Zysk Brutto']
+    # KOŁOWY PO LEWEJ: Struktura Ceny Sprzedaży (100% = Cena sprzedaży)
+    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód (Różnica)']
     values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
     
     fig_left = go.Figure(data=[go.Pie(
@@ -137,10 +137,9 @@ with col_left:
     st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
-    # KASETKI METRYK
     r1_1, r1_2 = st.columns(2)
-    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk Brutto</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód Netto</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód (Zysk)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (Netto)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
 
     r2_1, r2_2, r2_3 = st.columns(3)
     r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
@@ -152,12 +151,12 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    # SŁUPKOWY PO PRAWEJ: Wynik Finansowy
+    # SŁUPKOWY PO PRAWEJ: Podział Zysku i Podatków
     data_bars = {
-        'Zysk Brutto': przychod_roznica,
-        'Dochód Netto': dochod_na_czysto,
+        'Przychód (Różnica)': przychod_roznica,
+        'Dochód (Na czysto)': dochod_na_czysto,
         'VAT': vat_kwota,
-        'Dochodowy': podatek_dochodowy,
+        'Podatek': podatek_dochodowy,
         'Zdrowotna': skladka_zdrowotna
     }
     
@@ -180,7 +179,7 @@ with col_right:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- TABELE SZCZEGÓŁOWE ---
+# --- TABELE (Przywrócone do oryginału) ---
 t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - szczegóły</div>", unsafe_allow_html=True)
@@ -200,13 +199,13 @@ with t1:
     </div>""", unsafe_allow_html=True)
 
 with t2:
-    st.markdown("<div class='table-header'>Przychody i Podatki</div>", unsafe_allow_html=True)
+    # Przywrócono oryginalne nazwy i układ tabeli
+    st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
-        <div class='row'><span>Cena sprzedaży</span><span>{cena_sprzedazy:,.2f} zł</span></div>
-        <div class='row'><span>Zysk Brutto (Marża)</span><span style='font-weight:bold;'>{przychod_roznica:,.2f} zł</span></div>
+        <div class='row'><span>Przychód (Różnica)</span><span>{przychod_roznica:,.2f} zł</span></div>
+        <div class='row'><span>Dochód (Na czysto)</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
         <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
         <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
         <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
-        <div class='row' style='border-bottom:none; color:#cc0000;'><span>Suma podatków do zapłaty</span><span>{podatki_razem:,.2f} zł</span></div>
-        <div class='total-row' style='color:#28a745;'><span>DOCHÓD NA CZYSTO (NETTO)</span><span>{dochod_na_czysto:,.2f} zł</span></div>
+        <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
