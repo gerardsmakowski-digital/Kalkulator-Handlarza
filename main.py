@@ -176,7 +176,7 @@ with col_left:
         height=450, 
         showlegend=False
     )
-)
+
     )
     st.plotly_chart(fig_left, use_container_width=True)
 
