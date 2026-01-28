@@ -45,11 +45,9 @@ st.markdown("""
 
 # --- SIDEBAR (Panel wprowadzania danych) ---
 with st.sidebar:
-    # Użycie pliku logo z Twojego GitHuba
-    st.image("logo gerard s białe .png", use_container_width=True)
-    st.markdown("<br>", unsafe_allow_html=True)
-    # Zmniejszamy logo do 200 pikseli (możesz zmienić tę liczbę, aby idealnie dopasować)
+     # Zmniejszamy logo do 200 pikseli (możesz zmienić tę liczbę, aby idealnie dopasować)
     st.image("logo gerard s białe .png", width=200)
+    st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("### UZUPEŁNIJ KWOTY")
     kurs_eur = st.number_input("Kurs Euro", value=4.32, step=0.01)
