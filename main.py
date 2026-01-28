@@ -5,43 +5,37 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- KOMPLEKSOWY CSS (Usuwanie błędów i wymuszenie czcionki) ---
+# --- NAJBARDZIEJ AGRESYWNY CSS (Usuwanie błędów wizualnych) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     
-    /* Globalne wymuszenie czcionki na absolutnie wszystkim */
-    html, body, [class*="css"], .stMarkdown, p, span, label, input, button, div {
-        font-family: 'Montserrat', sans-serif !important;
-    }
+    /* 1. Globalna czcionka */
+    * { font-family: 'Montserrat', sans-serif !important; }
 
-    /* Ukrycie technicznych napisów (jak keyboard_double) i zbędnych elementów menu */
-    #MainMenu, footer, [data-testid="stSidebarNav"] {
-        display: none !important;
-    }
+    /* 2. CAŁKOWITE USUNIĘCIE BŁĘDNEGO NAPISU (keyboard_double i inne) */
+    button[title="Collapse sidebar"] { display: none !important; }
+    button[kind="header_button"] { display: none !important; }
+    .st-emotion-cache-6q9sum, .st-emotion-cache-10oheav { display: none !important; }
+    [data-testid="stSidebarCollapseButton"] { display: none !important; }
     
-    /* Usunięcie niechcianych napisów tekstowych ikon */
-    .st-emotion-cache-10oheav, .st-emotion-cache-6q9sum {
-        visibility: hidden !important;
-    }
+    /* Ukrycie paska bocznego menu i stopki */
+    #MainMenu, footer, header { visibility: hidden !important; height: 0 !important; }
 
-    /* Wymuszenie Montserrat w polach do wpisywania liczb */
-    input[type=number] {
-        font-family: 'Montserrat', sans-serif !important;
-        font-size: 16px !important;
-    }
-
-    /* Ciemny sidebar */
+    /* 3. Sidebar - Czerń i Montserrat */
     [data-testid="stSidebar"] { 
         background-color: #111111; 
         color: white !important; 
         border-right: 1px solid #333; 
     }
-    [data-testid="stSidebar"] label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { 
+    [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { 
         color: #ffffff !important; 
     }
 
-    /* Karty i tabele */
+    /* 4. Pola numeryczne - Wymuszenie czcionki */
+    input { font-family: 'Montserrat', sans-serif !important; }
+
+    /* 5. Karty i tabele */
     .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; margin-bottom: 10px; }
     .metric-label { font-size: 13px; color: #666; font-weight: bold; text-transform: uppercase; }
     .metric-value { font-size: 26px; color: #000; font-weight: bold; }
@@ -54,8 +48,8 @@ st.markdown("""
 
 # --- SIDEBAR ---
 with st.sidebar:
-    # Podciągnięcie loga wyżej
-    st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
+    # Podciągnięcie loga i usunięcie pustego miejsca
+    st.markdown('<div style="margin-top: -80px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -109,6 +103,7 @@ marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
 st.markdown(f"<h2 style='text-align: center; margin-bottom: 0;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 50px; margin-top:-20px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
+# Dashboard (Wykresy i Metryki)
 c1, c2, c3 = st.columns([1.5, 2, 1.5])
 with c1:
     st.bar_chart(pd.DataFrame({'PLN': [cena_pln_auto, wartosc_akcyzy, transport, dochod]}, index=['Auto', 'Akcyza', 'Transport', 'Zysk']))
