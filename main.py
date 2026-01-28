@@ -166,15 +166,18 @@ with col_left:
         textinfo='percent+label'
     )])
     fig_left.update_layout(
-        title=dict(
-            text="Struktura ceny sprzedaży", 
-            x=0.5,
-            font=dict(family="Montserrat", size=16)
-        ),
+        title={
+            'text': "Struktura ceny",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
+        },
         font=dict(family="Montserrat"),
-        margin=dict(t=80, b=50, l=10, r=10), 
-        height=450, 
-        showlegend=False
+        height=400,
+        showlegend=False,
+        margin=dict(t=80, b=10, l=10, r=10)
     )
 
    
@@ -211,16 +214,19 @@ with col_right:
         )
     ])
     fig_right.update_layout(
-    title=dict(
-        text="Wynik finansowy (PLN)", 
-        x=0.5, 
-        font=dict(family="Montserrat", size=18) # Dodaj tę linię
-    ),
-    font=dict(family="Montserrat"), # To zmieni czcionkę osi i etykiet
-    height=450, 
-    margin=dict(t=80, b=50, l=10, r=10),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)'
+        title={
+            'text': "Podatki (PLN)",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
+        },
+        font=dict(family="Montserrat"),
+        height=400,
+        margin=dict(t=80, b=10, l=10, r=10),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     
 )
     
