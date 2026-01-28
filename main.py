@@ -123,7 +123,7 @@ dochod_na_czysto = przychod_roznica - podatki_razem
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
-st.markdown(f"<h1 style='text-align: center; margin-top: 30px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; margin-top: 50px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
