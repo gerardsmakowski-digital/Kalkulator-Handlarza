@@ -177,7 +177,7 @@ with col_left:
         showlegend=False
     )
 
-    )
+   
     st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
