@@ -5,40 +5,52 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (TYLKO TE ZMIANY, KTÓRE CHCIAŁEŚ) ---
+# --- CSS (Naprawa wyglądu i zacieśnienie sekcji) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
 
-    /* Usuwanie błędów technicznych */
+    /* Ukrycie elementów technicznych */
     header, footer, #MainMenu { visibility: hidden !important; }
 
-    /* Ciemny sidebar */
+    /* Sidebar - Kolory i Montserrat */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
 
-    /* Zacieśnienie sekcji Akcyza -> Rejestracja -> Transport */
+    /* Zacieśnienie odstępów tylko w sekcji Akcyza -> Rejestracja -> Transport */
     [data-testid="stSidebar"] hr {
         margin: 10px 0 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
     
-    /* Podciągnięcie Transportu i innych pól wyżej */
-    [data-testid="stSidebar"] .stNumberInput {
-        margin-top: -10px !important;
+    /* Usunięcie wielkich dziur między polami w sidebarze */
+    [data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+        gap: 0.5rem !important;
     }
 
-    /* Karty i tabele (Twoje oryginalne kolory) */
-    .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; }
+    /* Karty metryk (Dashboard) */
+    .metric-card { 
+        background-color: white; 
+        padding: 20px; 
+        border-radius: 5px; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        border: 1px solid #ddd; 
+        text-align: center; 
+        margin-bottom: 10px;
+    }
+    .metric-label { font-size: 13px; color: #666; font-weight: bold; text-transform: uppercase; }
+    .metric-value { font-size: 26px; color: #000; font-weight: bold; }
+
+    /* Tabele podsumowania */
     .table-header { background-color: #cc0000; color: white; padding: 10px; font-weight: bold; border-radius: 5px 5px 0 0; }
     .table-container { background: white; padding: 15px; border: 1px solid #eee; border-radius: 0 0 5px 5px; }
-    .row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #f9f9f9; }
-    .total-row { display: flex; justify-content: space-between; padding-top: 10px; font-weight: bold; color: #28a745; }
+    .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 14px; }
+    .total-row { display: flex; justify-content: space-between; padding-top: 10px; font-weight: bold; color: #28a745; font-size: 16px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- SIDEBAR (Logika i układ) ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
@@ -46,32 +58,32 @@ with st.sidebar:
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
     cena_eur = st.number_input("Cena auta w EURO", value=0)
     
+    # Przywrócenie napisu "Kwota po przeliczeniu euro"
     kwota_przeliczona = cena_eur * kurs_eur
-    st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -15px;'>{kwota_przeliczona:,.2f} zł</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -15px;'>Kwota po przeliczeniu euro: {kwota_przeliczona:,.2f} zł</p>", unsafe_allow_html=True)
     
     cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_przeliczona))
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(cena_pln_auto))
     
-    # SEKCJA DO PODCIĄGNIĘCIA W GÓRĘ
+    # Sekcja Akcyza i Rejestracja - podciągnięta w górę
     st.markdown("---")
     st.markdown("**Stawka Akcyzy**")
     akcyza_opcja = st.radio("akcyza", ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], index=1, label_visibility="collapsed")
     
     st.markdown("---")
-    c1, c2 = st.columns(2)
-    with c1:
+    col_rej, col_prz = st.columns(2)
+    with col_rej:
         st.markdown("**Rejestracja**")
         rejestracja_check = st.checkbox("Rej", value=True, label_visibility="collapsed")
-    with c2:
+    with col_prz:
         st.markdown("**Przegląd**")
         przeglad_opcja = st.radio("Prz", ["bez gazu", "z gazem"], index=0, label_visibility="collapsed")
     
     st.markdown("---")
-    # TRANSPORT (teraz podciągnięty wyżej przez CSS margin-top)
     transport = st.number_input("Transport", value=1700)
     
-    # RESZTA POL (LAKIEROWANIE ITD.)
-    cena_lakieru = st.number_input("Cena lakierowania za element", value=500)
+    # Pozostałe koszty
+    cena_lakieru = st.number_input("Cena lakierowania (element)", value=500)
     ilosc_lakieru = st.number_input("Ilość elementów", value=0)
     koszt_lakiernika = cena_lakieru * ilosc_lakieru
     
@@ -84,45 +96,51 @@ with st.sidebar:
     st.markdown("---")
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
 
-# --- OBLICZENIA I PANEL GŁÓWNY (BEZ ZMIAN) ---
+# --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
-koszt_akcyzy = cena_do_akcyzy * stawka_akc
-suma_wydatki = (cena_pln_auto + koszt_akcyzy + transport + koszt_lakiernika + cena_czesci + mechanik + myjnia + ogloszenia + pozostale + (162 if rejestracja_check else 0) + (150 if przeglad_opcja == "bez gazu" else 245))
+wartosc_akcyzy = cena_do_akcyzy * stawka_akc
+koszt_rej = 162 if rejestracja_check else 0
+koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
+suma_wydatki = (cena_pln_auto + wartosc_akcyzy + transport + koszt_lakiernika + cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 dochod = cena_sprzedazy - suma_wydatki
+marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
-st.markdown(f"<h2 style='text-align: center; margin-top: -40px;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; margin-top: -15px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
+# --- PANEL GŁÓWNY (Nagłówek i Dashboard) ---
+st.markdown(f"<h2 style='text-align: center; margin-top: -30px; margin-bottom: 0;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 40px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
-# ... (Dalsza część Twoich wykresów i tabel bez zmian) ...
+# Wykresy i Metryki (Naprawione c1, c2, c3)
+c1, c2, c3 = st.columns([1.5, 2, 1.5])
+with c1:
+    st.bar_chart(pd.DataFrame({'PLN': [cena_pln_auto, wartosc_akcyzy, transport, dochod]}, index=['Auto', 'Akcyza', 'Transport', 'Zysk']))
 
-# Metryki
-col_m1, col_m2, col_m3 = st.columns(3)
-with col_m1:
-    st.markdown(f"<div class='metric-card'><div class='metric-label'>Inwestycja Total</div><div class='metric-value'>{suma_wydatki:,.0f} zł</div></div>", unsafe_allow_html=True)
-with col_m2:
-    st.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk Sprzedaży</div><div class='metric-value' style='color:#28a745;'>{zysk:,.0f} zł</div></div>", unsafe_allow_html=True)
-with col_m3:
-    st.markdown(f"<div class='metric-card'><div class='metric-label'>Marża</div><div class='metric-value'>{marza:.1f}%</div></div>", unsafe_allow_html=True)
+with c2:
+    m1, m2 = st.columns(2)
+    m1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value'>{cena_sprzedazy:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m3, m4 = st.columns(2)
+    m3.markdown(f"<div class='metric-card'><div class='metric-label'>Vat (23%)</div><div class='metric-value' style='font-size:18px;'>{(dochod*0.23):,.0f} zł</div></div>", unsafe_allow_html=True)
+    m4.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:18px;'>130 zł</div></div>", unsafe_allow_html=True)
 
-# Tabele i wykres
-st.markdown("<br>", unsafe_allow_html=True)
-t1, t2 = st.columns([2, 1])
-
-with t1:
-    st.markdown("<div class='table-header'>Szczegółowe Koszty</div>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class='table-container'>
-        <div class='row'><span>Zakup auta</span><span>{cena_pln_auto:,.2f} zł</span></div>
-        <div class='row'><span>Akcyza ({akcyza_opcja})</span><span>{koszt_akcyzy:,.2f} zł</span></div>
-        <div class='row'><span>Transport</span><span>{transport:,.2f} zł</span></div>
-        <div class='row'><span>Lakierowanie ({ilosc_lakieru} el.)</span><span>{koszt_lakiernika:,.2f} zł</span></div>
-        <div class='row'><span>Serwis i Inne</span><span>{mechanik + pozostale:,.2f} zł</span></div>
-        <div class='row'><span>Opłaty (Rej + Prz)</span><span>{koszt_rej + koszt_prz:,.2f} zł</span></div>
-        <div class='total-row'><span>SUMA KOSZTÓW</span><span>{suma_wydatki:,.2f} zł</span></div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with t2:
-    fig = go.Figure(data=[go.Pie(labels=['Auto', 'Koszty', 'Zysk'], values=[cena_pln_auto, suma_wydatki-cena_pln_auto, zysk], hole=.4)])
-    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=250, showlegend=False)
+with c3:
+    fig = go.Figure(data=[go.Pie(labels=['Auto', 'Akcyza', 'Inne'], values=[cena_pln_auto, wartosc_akcyzy, suma_wydatki-cena_pln_auto-wartosc_akcyzy], hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=220, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+t1, t2 = st.columns(2)
+with t1:
+    st.markdown("<div class='table-header'>Wydatki - podsumowanie</div>", unsafe_allow_html=True)
+    st.markdown(f"""<div class='table-container'>
+        <div class='row'><span>Samochód</span><span>{cena_pln_auto:,.2f} zł</span></div>
+        <div class='row'><span>Akcyza</span><span>{wartosc_akcyzy:,.2f} zł</span></div>
+        <div class='row'><span>Transport</span><span>{transport:,.2f} zł</span></div>
+        <div class='total-row'><span>SUMA</span><span>{suma_wydatki:,.2f} zł</span></div>
+    </div>""", unsafe_allow_html=True)
+with t2:
+    st.markdown("<div class='table-header'>Przychody - podsumowanie</div>", unsafe_allow_html=True)
+    st.markdown(f"""<div class='table-container'>
+        <div class='row'><span>Przychód</span><span>{cena_sprzedazy:,.2f} zł</span></div>
+        <div class='row'><span>Dochód</span><span>{dochod:,.2f} zł</span></div>
+        <div class='total-row' style='color:#000;'><span>Marża</span><span>{marza_proc:.1f}%</span></div>
+    </div>""", unsafe_allow_html=True)
