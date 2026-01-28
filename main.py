@@ -20,7 +20,7 @@ st.markdown("""
 }
 
 /* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
-[data-testid="stExpandSidebarButton"] [data-testid="stBaseButton-headerNoPadding"] span {
+[data-testid="stExpandSidebarButton"]  span {
     font-family: "Material Symbols Rounded" !important; color:#000;
     }
 
