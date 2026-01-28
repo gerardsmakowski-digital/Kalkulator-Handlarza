@@ -15,7 +15,7 @@ st.markdown("""
     <style>
    
   /* 1. Gdy sidebar jest OTWARTY - biała ikona na czarnym tle */
-[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] {
+[data-testid="stSidebarCollapseButton"] [data-testid="stBaseButton-headerNoPadding"] {
     color: white !important;
 }
 
