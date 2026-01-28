@@ -5,25 +5,19 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (Stabilny, ciemny sidebar i czyste tabele) ---
+# --- CSS ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
     header, footer, #MainMenu { visibility: hidden !important; }
-
-    /* Sidebar Styling */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
     [data-testid="stSidebar"] hr { margin: 10px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
     [data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0.5rem !important; }
-
-    /* Dashboard & Cards */
     .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; margin-bottom: 10px; }
     .metric-label { font-size: 13px; color: #666; font-weight: bold; text-transform: uppercase; }
     .metric-value { font-size: 26px; color: #000; font-weight: bold; }
-
-    /* Tables */
     .table-header { background-color: #cc0000; color: white; padding: 10px; font-weight: bold; border-radius: 5px 5px 0 0; }
     .table-container { background: white; padding: 15px; border: 1px solid #eee; border-radius: 0 0 5px 5px; }
     .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 14px; }
@@ -31,7 +25,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR (LOGIKA I WEJŚCIE) ---
+# --- SIDEBAR ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
@@ -39,7 +33,6 @@ with st.sidebar:
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
     cena_eur = st.number_input("Cena auta w EURO", value=0.0)
     
-    # Logika priorytetu Euro
     kwota_z_euro = cena_eur * kurs_eur
     if cena_eur > 0:
         st.markdown(f"<p style='font-size: 12px; color: #28a745; margin-top: -15px;'>Przeliczono z Euro: {kwota_z_euro:,.2f} zł</p>", unsafe_allow_html=True)
@@ -79,26 +72,30 @@ with st.sidebar:
     st.markdown("---")
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
 
-# --- OBLICZENIA (LOGIKA HANDLOWA) ---
+# --- POPRAWIONE OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
 wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
 koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
 
-# SUMA WYDATKÓW (Wszystkie koszty)
 suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + 
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
-# PRZYCHÓD (Różnica między sprzedażą a wszystkimi wydatkami)
 przychod_roznica = cena_sprzedazy - suma_wydatki
 
-# PODATKI (liczone od Twojego przychodu)
-vat_kwota = przychod_roznica * 0.23 if przychod_roznica > 0 else 0
-podatek_dochodowy = przychod_roznica * 0.19 if przychod_roznica > 0 else 0
-skladka_zdrowotna = przychod_roznica * 0.049 if przychod_roznica > 0 else 0
-podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
+if przychod_roznica > 0:
+    # 1. VAT marża (23% w stu)
+    vat_kwota = przychod_roznica * (0.23 / 1.23)
+    # 2. Podstawa do dochodowego i zdrowotnej (Zysk - VAT)
+    podstawa = przychod_roznica - vat_kwota
+    # 3. Podatek dochodowy (19% od podstawy)
+    podatek_dochodowy = podstawa * 0.19
+    # 4. Składka zdrowotna (4,9% od podstawy)
+    skladka_zdrowotna = podstawa * 0.049
+else:
+    vat_kwota = podatek_dochodowy = skladka_zdrowotna = 0
 
-# DOCHÓD (Zysk na czysto)
+podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
 dochod_na_czysto = przychod_roznica - podatki_razem
 marza_proc = (przychod_roznica / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
@@ -106,15 +103,15 @@ marza_proc = (przychod_roznica / suma_wydatki * 100) if suma_wydatki > 0 else 0
 st.markdown(f"<h2 style='text-align: center; margin-top: -30px;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 40px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
-# 1. Row: Dashboard
+# Dashboard
 c1, c2, c3 = st.columns([1.5, 2, 1.5])
 with c1:
     st.bar_chart(pd.DataFrame({'PLN': [finalna_cena_samochodu, wartosc_akcyzy, transport, przychod_roznica]}, index=['Auto', 'Akcyza', 'Transport', 'Przychód']))
 
 with c2:
     m1, m2 = st.columns(2)
-    m1.markdown(f"<div class='metric-card'><div class='metric-label'>Inwestycja Total</div><div class='metric-value'>{suma_wydatki:,.0f} zł</div></div>", unsafe_allow_html=True)
-    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk (Przychód)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m1.markdown(f"<div class='metric-card'><div class='metric-label'>Suma Wydatków</div><div class='metric-value'>{suma_wydatki:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk Brutto</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.0f} zł</div></div>", unsafe_allow_html=True)
     m3, m4 = st.columns(2)
     m3.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:22px;'>{podatki_razem:,.0f} zł</div></div>", unsafe_allow_html=True)
     m4.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód Netto</div><div class='metric-value'>{dochod_na_czysto:,.0f} zł</div></div>", unsafe_allow_html=True)
@@ -125,8 +122,6 @@ with c3:
     st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# 2. Row: Tables
 t1, t2 = st.columns(2)
 
 with t1:
@@ -151,7 +146,7 @@ with t2:
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Przychód (Różnica)</span><span>{przychod_roznica:,.2f} zł</span></div>
         <div class='row'><span>Dochód (Na czysto)</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
-        <div class='row'><span>Vat</span><span>{vat_kwota:,.2f} zł</span></div>
+        <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
         <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
         <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
         <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
