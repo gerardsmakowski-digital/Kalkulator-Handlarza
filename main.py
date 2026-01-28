@@ -9,33 +9,50 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS (KOMPLEKSOWA NAPRAWA STRZAŁKI I WYKRESU) ---
+# --- CSS (FINALNA NAPRAWA IKONY SIDEBARU) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
     
-    /* Ukrycie śmieci, ale zostawienie przycisku sterowania */
+    /* Ukrycie standardowych elementów nagłówka */
     header { background-color: rgba(0,0,0,0) !important; }
     [data-testid="stHeader"] { background-color: rgba(0,0,0,0) !important; }
     #MainMenu, footer { visibility: hidden !important; }
 
-    /* --- NAPRAWA STRZAŁKI SIDEBARU --- */
-    /* Kolor strzałki gdy sidebar jest ZAMKNIĘTY (widoczna na białym tle) */
-    [data-testid="stSidebarCollapsedControl"] svg {
-        fill: #000000 !important;
-        width: 30px !important;
-        height: 30px !important;
+    /* --- FINALNA NAPRAWA PRZYCISKU SIDEBARU --- */
+    
+    /* 1. Ukrywamy całkowicie oryginalną zawartość przycisku (tekst i SVG) */
+    [data-testid="stSidebarCollapsedControl"] button {
+        color: transparent !important;
+    }
+    [data-testid="stSidebarCollapsedControl"] svg, [data-testid="stSidebar"] button svg {
+        display: none !important;
     }
 
-    /* Kolor strzałki gdy sidebar jest OTWARTY (widoczna na czarnym tle) */
-    [data-testid="stSidebar"] button svg {
-        fill: #ffffff !important;
+    /* 2. Tworzymy własną strzałkę gdy sidebar jest ZAMKNIĘTY */
+    [data-testid="stSidebarCollapsedControl"] button::after {
+        content: "▶";
+        color: #000000 !important;
+        font-size: 20px !important;
+        visibility: visible !important;
+        display: block !important;
     }
 
-    /* Usunięcie ewentualnych tekstów zamiast ikon */
-    [data-testid="stSidebarCollapsedControl"] {
-        font-size: 0px !important;
+    /* 3. Tworzymy własną strzałkę gdy sidebar jest OTWARTY */
+    [data-testid="stSidebar"] button::after {
+        content: "◀";
+        color: #ffffff !important;
+        font-size: 20px !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+
+    /* Wycentrowanie nowych strzałek */
+    [data-testid="stSidebarCollapsedControl"] button, [data-testid="stSidebar"] button {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     /* Sidebar - Kolory */
@@ -152,8 +169,8 @@ with col_left:
     )])
     fig_left.update_layout(
         title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
-        margin=dict(t=80, b=100, l=10, r=10), # Duży margines b=100
-        height=500, # Jeszcze wyższy dla pewności
+        margin=dict(t=80, b=100, l=10, r=10),
+        height=500,
         showlegend=False 
     )
     st.plotly_chart(fig_left, use_container_width=True)
