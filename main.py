@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (Stabilny układ) ---
+# --- CSS ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
@@ -78,34 +78,39 @@ wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
 koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
 suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
-dochod = cena_sprzedazy - suma_wydatki
-marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
+
+dochod_brutto = cena_sprzedazy - suma_wydatki
+vat_kwota = dochod_brutto * 0.23 if dochod_brutto > 0 else 0
+podatek_dochodowy = dochod_brutto * 0.19 if dochod_brutto > 0 else 0
+skladka_zdrowotna = dochod_brutto * 0.049 if dochod_brutto > 0 else 0
+podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
+marza_proc = (dochod_brutto / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
 # --- PANEL GŁÓWNY ---
 st.markdown(f"<h2 style='text-align: center; margin-top: -30px; margin-bottom: 0;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #000; margin-bottom: 40px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
-# Dashboard - 3 Kolumny
+# Dashboard
 c1, c2, c3 = st.columns([1.5, 2, 1.5])
 with c1:
-    st.bar_chart(pd.DataFrame({'PLN': [finalna_cena_samochodu, wartosc_akcyzy, transport, dochod]}, index=['Auto', 'Akcyza', 'Transport', 'Zysk']))
+    st.bar_chart(pd.DataFrame({'PLN': [finalna_cena_samochodu, wartosc_akcyzy, transport, dochod_brutto]}, index=['Auto', 'Akcyza', 'Transport', 'Zysk']))
 
 with c2:
     m1, m2 = st.columns(2)
     m1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value'>{cena_sprzedazy:,.0f} zł</div></div>", unsafe_allow_html=True)
-    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod_brutto:,.0f} zł</div></div>", unsafe_allow_html=True)
     m3, m4 = st.columns(2)
-    m3.markdown(f"<div class='metric-card'><div class='metric-label'>Vat (23%)</div><div class='metric-value' style='font-size:18px;'>{(dochod*0.23):,.0f} zł</div></div>", unsafe_allow_html=True)
-    m4.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:18px;'>130 zł</div></div>", unsafe_allow_html=True)
+    m3.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:22px;'>{podatki_razem:,.0f} zł</div></div>", unsafe_allow_html=True)
+    m4.markdown(f"<div class='metric-card'><div class='metric-label'>Marża</div><div class='metric-value'>{marza_proc:.1f}%</div></div>", unsafe_allow_html=True)
 
 with c3:
     fig = go.Figure(data=[go.Pie(labels=['Auto', 'Akcyza', 'Inne'], values=[finalna_cena_samochodu, wartosc_akcyzy, suma_wydatki-finalna_cena_samochodu-wartosc_akcyzy], hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
     fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=220, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
-# Tabele Podsumowania - 2 Kolumny
 st.markdown("<br>", unsafe_allow_html=True)
 t1, t2 = st.columns(2)
+
 with t1:
     st.markdown("<div class='table-header'>Wydatki - podsumowanie</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
@@ -127,6 +132,9 @@ with t2:
     st.markdown("<div class='table-header'>Przychody - podsumowanie</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Przychód</span><span>{cena_sprzedazy:,.2f} zł</span></div>
-        <div class='row'><span>Dochód</span><span>{dochod:,.2f} zł</span></div>
-        <div class='total-row' style='color:#000;'><span>Marża</span><span>{marza_proc:.1f}%</span></div>
+        <div class='row'><span>Dochód</span><span>{dochod_brutto:,.2f} zł</span></div>
+        <div class='row'><span>Vat</span><span>{vat_kwota:,.2f} zł</span></div>
+        <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
+        <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
+        <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
