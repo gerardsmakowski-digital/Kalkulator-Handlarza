@@ -21,6 +21,9 @@ html, body, .stApp,
 .stMetric, .stDataFrame, label, p, span, div {
     font-family: 'Montserrat', sans-serif !important;
 }
+span[class*="material"], i[class*="material"] {
+    font-family: 'Material Icons' !important;
+}
 
 
 
