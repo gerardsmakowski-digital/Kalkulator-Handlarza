@@ -158,6 +158,7 @@ else:
 
 podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
 dochod_na_czysto = przychod_roznica - podatki_razem 
+procent_przychod = (przychod_roznica / suma_wydatki * 100) if suma_wydatki > 0 else 0
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
