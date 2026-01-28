@@ -5,13 +5,30 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CUSTOM CSS ---
+# --- CUSTOM CSS (Montserrat, Stylizacja Chipsów i Sidebar) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     html, body, [class*="css"], .stMarkdown, p, span, label { font-family: 'Montserrat', sans-serif !important; }
+    
+    /* Ciemny sidebar */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; border-right: 1px solid #333; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
+
+    /* STYLIZACJA CHIPSÓW (Segmented Control) */
+    /* Tło nieaktywne */
+    div[data-baseweb="segmented-control"] button {
+        background-color: #222 !important;
+        color: white !important;
+        border: 1px solid #444 !important;
+    }
+    /* Stan po zaznaczeniu (Białe tło, czarny napis) */
+    div[data-baseweb="segmented-control"] button[aria-selected="true"] {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    /* Karty wyników i tabele */
     .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; margin-bottom: 10px; }
     .metric-label { font-size: 14px; color: #666; font-weight: bold; text-transform: uppercase; }
     .metric-value { font-size: 28px; color: #000; font-weight: bold; }
@@ -24,7 +41,7 @@ st.markdown("""
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.image("logo gerard s białe .png", width=180) # Zmniejszone logo
+    st.image("logo gerard s białe .png", width=180)
     st.markdown("<br>", unsafe_allow_html=True)
     
     st.markdown("### DANE WEJŚCIOWE")
@@ -32,24 +49,34 @@ with st.sidebar:
     cena_eur = st.number_input("Cena auta w EURO", value=5000)
     
     st.markdown("---")
-    # WYBÓR AKCYZY JAKO CHIPSY
+    # AKCYZA JAKO CIEMNE CHIPSY
     st.markdown("Stawka Akcyzy")
     akcyza_typ = st.segmented_control(
         "Wybierz akcyzę", 
         ["Brak", "do 2.0 l", "pow. 2.0 l"], 
-        default="do 2.0 l"
+        default="do 2.0 l",
+        label_visibility="collapsed"
     )
     
     st.markdown("---")
-    # ROZBUDOWANY PRZEGLĄD
-    st.markdown("Przegląd techniczny")
-    przeglad_opcja = st.radio(
-        "Rodzaj przeglądu", 
-        ["Brak", "Bez gazu (150 zł)", "Z gazem (245 zł)"], 
-        index=1
-    )
+    # REJESTRACJA I PRZEGLĄD OBOK SIEBIE
+    st.markdown("Opłaty dodatkowe")
+    col_op1, col_op2 = st.columns(2)
+    with col_op1:
+        rejestracja_check = st.checkbox("Rejestracja", value=True)
+    with col_op2:
+        przeglad_check = st.checkbox("Przegląd", value=True)
     
-    rejestracja_check = st.checkbox("Rejestracja (162 zł)", value=True)
+    # OPCJE PRZEGLĄDU (pojawiają się tylko gdy Przegląd jest zaznaczony)
+    koszt_prz = 0
+    if przeglad_check:
+        przeglad_opcja = st.radio(
+            "Rodzaj przeglądu", 
+            ["Bez gazu", "Z gazem"], 
+            index=0,
+            horizontal=True
+        )
+        koszt_prz = 150 if przeglad_opcja == "Bez gazu" else 245
     
     st.markdown("---")
     transport = st.number_input("Transport (PLN)", value=1700)
@@ -63,20 +90,15 @@ with st.sidebar:
 
 # --- LOGIKA OBLICZEŃ ---
 cena_pln = cena_eur * kurs_eur
-
-# Obliczanie akcyzy z chipsów
 stawka_akc = 0.031 if akcyza_typ == "do 2.0 l" else (0.186 if akcyza_typ == "pow. 2.0 l" else 0)
 wartosc_akcyzy = cena_pln * stawka_akc
-
-# Obliczanie przeglądu
-koszt_prz = 150 if "Bez gazu" in przeglad_opcja else (245 if "Z gazem" in przeglad_opcja else 0)
 koszt_rej = 162 if rejestracja_check else 0
 
 suma_wydatki = cena_pln + wartosc_akcyzy + transport + mechanik + lakiernik + detailing + ogloszenia + koszt_rej + koszt_prz
 dochod = cena_sprzedazy - suma_wydatki
 marza_proc = (dochod / suma_wydatki * 100) if suma_wydatki > 0 else 0
 
-# --- PANEL GŁÓWNY ---
+# --- PANEL GŁÓWNY (Dashboard) ---
 st.markdown(f"<h2 style='text-align: center;'>Kalkulator Handlarza</h2>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: gray;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
@@ -98,6 +120,9 @@ with c3:
     fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=220, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
+st.markdown("<br>", unsafe_allow_html=True)
+
+# TABELE PODSUMOWUJĄCE
 t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - podsumowanie</div>", unsafe_allow_html=True)
