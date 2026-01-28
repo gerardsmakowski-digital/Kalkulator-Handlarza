@@ -8,12 +8,13 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded" 
 )
-#----Ikona sidebar ---
-st.emotion(font-family: "Material Symbols Rounded"; color: #fff;)
+
 
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
+   
+   .st-emotion-cache-5r6ut5 {font-family: "Material Symbols Rounded"; color: #fff;}
    
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
