@@ -15,9 +15,6 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-html, body (.material-icons):not([class*="material-icons"]) {
-    font-family: 'Montserrat', sans-serif !important;
-}
    
   /* 1. Gdy sidebar jest OTWARTY - biała ikona na czarnym tle */
 .st-emotion-cache {
