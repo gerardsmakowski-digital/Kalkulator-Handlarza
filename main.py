@@ -16,15 +16,28 @@ st.markdown("""
     
    
 
-/* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
-[data-testid="stExpandSidebarButton"]  span {
-    font-family: "Material Symbols Rounded" !important; color:#000;
-    }
+/* 1. Import czcionki z Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
 
-/* 3. KLUCZOWA NAPRAWA: Przywrócenie fontu ikonowego, aby nie było napisu 'keyboard...' */
-[data-testid="stBaseButton-headerNoPadding"] span {
-    font-family: "Material Symbols Rounded" !important; color:#fff;
+/* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
+html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
+    font-family: 'Montserrat', sans-serif !important;
 }
+
+/* 3. WYJĄTEK: Przywrócenie fontu ikonowego dla przycisków sidebaru */
+/* To zapobiega wyświetlaniu napisów typu 'keyboard_arrow_left' */
+[data-testid="stBaseButton-headerNoPadding"] span, 
+[data-testid="stExpandSidebarButton"] span {
+    font-family: "Material Symbols Rounded" !important;
+}
+
+/* 4. Kolory ikon zależnie od stanu (otwarty/zamknięty) */
+[data-testid="stBaseButton-headerNoPadding"] span {
+    color: #ffffff !important; /* Biała ikona wewnątrz paska */
+}
+
+[data-testid="stExpandSidebarButton"] span {
+    color: #111111 !important; /* Ciemna ikona na zewnątrz paska */
 }
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
