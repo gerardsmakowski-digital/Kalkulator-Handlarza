@@ -94,7 +94,7 @@ with st.sidebar:
     pozostale = st.number_input("Pozostałe", value=200)
     
     st.markdown("---")
-    cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
+    cena_sprzedazy = st.number_input("CENA SPRZEDAŻY AUTA", value=25000)
 
 # --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
