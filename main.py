@@ -60,7 +60,7 @@ with st.sidebar:
     
     # Przywrócenie napisu "Kwota po przeliczeniu euro"
     kwota_przeliczona = cena_eur * kurs_eur
-    st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -15px;'>Kwota po przeliczeniu euro: {kwota_przeliczona:,.2f} zł</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -5px;'>Kwota po przeliczeniu euro: {kwota_przeliczona:,.2f} zł</p>", unsafe_allow_html=True)
     
     cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_przeliczona))
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(cena_pln_auto))
