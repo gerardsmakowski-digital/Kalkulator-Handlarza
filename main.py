@@ -12,13 +12,7 @@ st.set_page_config(
 # --- CSS (Naprawa ikon + Ukrycie Headera) ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    
-    /* Nadpisujemy czcionkę dla głównych elementów tekstowych, omijając ikony systemowe */
-    html, body, [class*="st-"], div, span, p, h1, h2, h3, h4, label {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-
+   
     /* Ukrycie headera (górnego paska) */
     header[data-testid="stHeader"] {
         visibility: hidden;
