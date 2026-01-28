@@ -9,30 +9,40 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-# --- CSS (Naprawa czcionek, przycisków i interfejsu) ---
+
+# --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
-    /* 1. Import czcionki */
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
-
-    /* 2. Globalne ustawienie czcionki */
-    html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
-        font-family: 'Montserrat', sans-serif !important;
-    }
-
-    /* 3. Wyraźne przyciski plus/minus (Czerwone) */
+    
+   /* Wyraźne przyciski plus/minus w polach numerycznych */
     button[data-testid="stNumberInputStepUp"], 
     button[data-testid="stNumberInputStepDown"] {
-        color: white !important;
+        color: #111111 !important;
         background-color: #cc0000 !important;
         border-radius: 4px !important;
-        opacity: 1 !important;
     }
 
+    /* Efekt po najechaniu na plus/minus */
     button[data-testid="stNumberInputStepUp"]:hover, 
     button[data-testid="stNumberInputStepDown"]:hover {
-        background-color: #990000 !important;
+        background-color: #cc0000 !important;
+        color: white !important;
     }
+
+/* 1. Import czcionki z Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
+
+/* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
+html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* 3. WYJĄTEK: Przywrócenie fontu ikonowego dla przycisków sidebaru */
+/* To zapobiega wyświetlaniu napisów typu 'keyboard_arrow_left' */
+[data-testid="stBaseButton-headerNoPadding"] span, 
+[data-testid="stExpandSidebarButton"] span {
+    font-family: "Material Symbols Rounded" !important;
+}
 
 /* 4. Kolory ikon zależnie od stanu (otwarty/zamknięty) */
 [data-testid="stBaseButton-headerNoPadding"] span {
@@ -42,17 +52,22 @@ st.markdown("""
 [data-testid="stExpandSidebarButton"] span {
     color: #000 !important; /* Ciemna ikona na zewnątrz paska */
 }
-
-    header[data-testid="stHeader"] { visibility: hidden; height: 0px; }
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
 
-    .block-container { padding-top: 2rem !important; }
+    /* Poprawka odstępu po usunięciu headera, żeby tytuł nie był przyklejony do góry */
+    .block-container {
+        padding-top: 2rem !important;
+    }
 
-    /* Sidebar Stylizacja */
+    /* Sidebar - Stylizacja */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
+    [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
     
+    /* Kolor ikony zamykania sidebaru */
+    [data-testid="stSidebar"] button { color: white !important; }
+
     /* Dashboard Cards */
     .metric-card { 
         background-color: white; padding: 15px; border-radius: 10px; 
@@ -60,14 +75,14 @@ st.markdown("""
         text-align: center; margin-bottom: 10px; min-height: 110px; 
         display: flex; flex-direction: column; justify-content: center; 
     }
-    .metric-label { font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; }
+    .metric-label { font-size: 11px; color: #666; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .metric-value { font-size: 22px; color: #000; font-weight: 800; margin: 2px 0; }
     .metric-sub { font-size: 12px; color: #28a745; font-weight: bold; }
 
     /* Tables */
-    .table-header { background-color: #cc0000; color: white; padding: 12px; font-weight: bold; border-radius: 5px 5px 0 0; }
+    .table-header { background-color: #cc0000; color: white; padding: 12px; font-weight: bold; border-radius: 5px 5px 0 0; font-size: 16px; }
     .table-container { background: white; padding: 20px; border: 1px solid #eee; border-radius: 0 0 5px 5px; }
-    .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #333; }
+    .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 15px; }
     .total-row { display: flex; justify-content: space-between; padding-top: 12px; font-weight: bold; color: #28a745; font-size: 18px; border-top: 2px solid #eee; }
     </style>
     """, unsafe_allow_html=True)
@@ -84,21 +99,27 @@ with st.sidebar:
     cena_eur = st.number_input("Cena auta w EURO", value=3550.0)
     
     kwota_z_euro = cena_eur * kurs_eur
-    st.markdown(f"<p style='font-size: 12px; color: #28a745; margin-top: -15px;'>Przeliczono: {kwota_z_euro:,.2f} zł</p>", unsafe_allow_html=True)
-    
-    cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_z_euro))
+    if cena_eur > 0:
+        st.markdown(f"<p style='font-size: 12px; color: #28a745; margin-top: -15px;'>Przeliczono z Euro: {kwota_z_euro:,.2f} zł</p>", unsafe_allow_html=True)
+        cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_z_euro))
+    else:
+        cena_pln_auto = st.number_input("Cena auta w PLN", value=15158.50)
+
     finalna_cena_samochodu = cena_pln_auto
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(finalna_cena_samochodu))
     
     st.markdown("---")
-    akcyza_opcja = st.radio("Akcyza", ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], index=1)
+    st.markdown("**Akcyza**")
+    akcyza_opcja = st.radio("Stawka", ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], index=1, label_visibility="collapsed")
     
     st.markdown("---")
     col_rej, col_prz = st.columns(2)
     with col_rej:
-        rejestracja_check = st.checkbox("Rejestracja", value=True)
+        st.markdown("**Rejestracja**")
+        rejestracja_check = st.checkbox("Tak", value=True)
     with col_prz:
-        przeglad_opcja = st.radio("Przegląd", ["bez gazu", "z gazem"], index=0)
+        st.markdown("**Przegląd**")
+        przeglad_opcja = st.radio("Rodzaj", ["bez gazu", "z gazem"], index=0, label_visibility="collapsed")
     
     st.markdown("---")
     transport = st.number_input("Transport", value=1700)
@@ -113,9 +134,19 @@ with st.sidebar:
     pozostale = st.number_input("Pozostałe", value=200)
     
     st.markdown("---")
+   # ... (wcześniejszy kod sidebaru)
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY AUTA", value=35000)
 
-    st.markdown("<div style='text-align: center; padding-top: 20px;'><a href='https://gerard-s.pl' target='_blank' style='color: #fff; text-decoration: none; font-weight: bold; font-size: 14px;'>www.gerard-s.pl</a></div>", unsafe_allow_html=True)
+    # DODATEK NA SAMYM DOLE:
+    st.markdown("---") # Linia oddzielająca
+    st.markdown(
+        """
+        <div style='text-align: center; padding-top: 20px;'>
+            <a href='https://gerard-s.pl' target='_blank' style='color: #fff; text-decoration: none; font-weight: bold; font-size: 14px;'>www.gerard-s.pl</a>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
 
 # --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
@@ -143,34 +174,6 @@ dochod_na_czysto = przychod_roznica - podatki_razem
 procent_przychod = (przychod_roznica / suma_wydatki * 100) if suma_wydatki > 0 else 0
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
-# --- PRZYGOTOWANIE WYKRESÓW (Przed wyświetleniem kolumn) ---
-
-# Wykres Kołowy
-fig_left = go.Figure(data=[go.Pie(
-    labels=['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód'], 
-    values=[finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, max(0, przychod_roznica)], 
-    hole=.4, 
-    marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
-    textinfo='percent+label'
-)])
-fig_left.update_layout(
-    title={'text': "Struktura wydatków", 'y': 0.9, 'x': 0.5, 'xanchor': 'center', 'font': {'size': 18, 'weight': 800}},
-    font=dict(family="Montserrat"), height=400, showlegend=False, margin=dict(t=80, b=10, l=10, r=10)
-)
-
-# Wykres Słupkowy
-data_bars = {'Przychód': przychod_roznica, 'Dochód': dochod_na_czysto, 'VAT': vat_kwota, 'Podatek': podatek_dochodowy, 'Zdrowotna': skladka_zdrowotna}
-fig_right = go.Figure(data=[go.Bar(
-    x=list(data_bars.keys()), 
-    y=list(data_bars.values()),
-    marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
-)])
-fig_right.update_layout(
-    title={'text': "Zestawienie finansowe", 'y': 0.9, 'x': 0.5, 'xanchor': 'center', 'font': {'size': 18, 'weight': 800}},
-    font=dict(family="Montserrat"), height=400, margin=dict(t=80, b=10, l=10, r=10),
-    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)'
-)
-
 # --- PANEL GŁÓWNY ---
 st.markdown(f"<h1 style='text-align: center; margin-top: 50px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
@@ -178,7 +181,33 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
-    st.plotly_chart(fig_left, use_container_width=True, config={'displayModeBar': False})
+    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
+    values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
+    
+    fig_left = go.Figure(data=[go.Pie(
+        labels=labels_pie, 
+        values=values_pie, 
+        hole=.4, 
+        marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
+        textinfo='percent+label'
+    )])
+    fig_left.update_layout(
+        title={
+            'text': "Struktura wydatków",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
+        },
+        font=dict(family="Montserrat"),
+        height=400,
+        showlegend=False,
+        margin=dict(t=80, b=10, l=10, r=10)
+    )
+
+   
+    st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
     r1_1, r1_2 = st.columns(2)
@@ -195,8 +224,39 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    # BLOKADA WYKRESU SŁUPKOWEGO (staticPlot: True wyłącza zoom i przesuwanie)
-    st.plotly_chart(fig_right, use_container_width=True, config={'displayModeBar': False, 'staticPlot': True})
+    data_bars = {
+        'Przychód': przychod_roznica,
+        'Dochód': dochod_na_czysto,
+        'VAT': vat_kwota,
+        'Podatek': podatek_dochodowy,
+        'Zdrowotna': skladka_zdrowotna
+    }
+    
+    fig_right = go.Figure(data=[
+        go.Bar(
+            x=list(data_bars.keys()), 
+            y=list(data_bars.values()),
+            marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
+        )
+    ])
+    fig_right.update_layout(
+        title={
+            'text': "Przychody i podatki",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
+        },
+        font=dict(family="Montserrat"),
+        height=400,
+        margin=dict(t=80, b=10, l=10, r=10),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    
+)
+    
+    st.plotly_chart(fig_right, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
