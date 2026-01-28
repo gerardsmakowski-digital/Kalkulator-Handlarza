@@ -12,16 +12,20 @@ st.set_page_config(
 # --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-html, body, .stApp, .stApp *:not(.material-icons):not([class*="material-icons"]) {
+/* Tekst w apce */
+html, body, .stApp,
+.stMarkdown, .stText, .stNumberInput, .stTextInput,
+.stSelectbox, .stRadio, .stCheckbox, .stButton,
+.stMetric, .stDataFrame, label, p, span, div {
     font-family: 'Montserrat', sans-serif !important;
+    span[class*="material"], i[class*="material"] {
+    font-family: 'Material Icons' !important;
+
+
 }
 
-/* Przywracamy font ikon Streamlit */
-.material-icons, [class^="material-icons"], [class*="material-icons"] {
-    font-family: 'Material Icons' !important;
-}
 
     /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
     footer, #MainMenu { visibility: hidden !important; }
