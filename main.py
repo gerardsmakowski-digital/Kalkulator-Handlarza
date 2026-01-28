@@ -5,15 +5,16 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- ZAAWANSOWANY CSS ---
+# --- CUSTOM CSS (Montserrat i Sidebar) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     html, body, [class*="css"], .stMarkdown, p, span, label { font-family: 'Montserrat', sans-serif !important; }
+    
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; border-right: 1px solid #333; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
-    div[data-baseweb="segmented-control"] button { background-color: #1a1a1a !important; color: white !important; border: 1px solid #444 !important; }
-    div[data-baseweb="segmented-control"] button[aria-selected="true"] { background-color: white !important; color: black !important; font-weight: bold !important; }
+
+    /* Karty i tabele */
     .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; margin-bottom: 10px; }
     .metric-label { font-size: 13px; color: #666; font-weight: bold; text-transform: uppercase; }
     .metric-value { font-size: 26px; color: #000; font-weight: bold; }
@@ -24,50 +25,51 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- SIDEBAR (Zgodnie ze screenem) ---
 with st.sidebar:
     st.image("logo gerard s białe .png", width=180)
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # 1. Kurs Euro
+    # 1. Dane finansowe podstawowe
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
-    
-    # 2. Cena w EURO i przeliczenie
     cena_eur = st.number_input("Cena auta w EURO", value=0)
+    
     kwota_przeliczona = cena_eur * kurs_eur
     st.markdown(f"<p style='font-size: 12px; color: #aaa; margin-top: -15px;'>Kwota po przeliczeniu euro: {kwota_przeliczona:,.2f} zł</p>", unsafe_allow_html=True)
     
-    # 3. Cena auta w PLN (domyślnie przeliczona, ale można wpisać swoją)
     cena_pln_auto = st.number_input("Cena auta w PLN", value=float(kwota_przeliczona))
-    
-    # 4. Cena auta do akcyzy
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(cena_pln_auto))
     
     st.markdown("---")
     
-    # Sekcja Akcyza
+    # 2. SEKCJA AKCYZA (Checkbox jak w przeglądzie)
     st.markdown("Stawka Akcyzy")
-    akcyza_typ = st.segmented_control(
-        "akcyza_chips", 
-        ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], 
-        default="do 2.0 l",
+    akcyza_opcja = st.radio(
+        "Wybierz stawkę akcyzy",
+        ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"],
+        index=1,
         label_visibility="collapsed"
     )
     
     st.markdown("---")
     
-    # Rejestracja i Przegląd
+    # 3. Opłaty dodatkowe (Rejestracja i Przegląd obok siebie)
     col_op1, col_op2 = st.columns(2)
     with col_op1:
         st.markdown("**Rejestracja**")
         rejestracja_check = st.checkbox("Zaznacz rej", value=True, label_visibility="collapsed")
     with col_op2:
         st.markdown("**Przegląd**")
-        przeglad_opcja = st.radio("Rodzaj przeglądu", ["bez gazu", "z gazem"], index=0, label_visibility="collapsed")
+        przeglad_opcja = st.radio(
+            "Rodzaj przeglądu", 
+            ["bez gazu", "z gazem"], 
+            index=0, 
+            label_visibility="collapsed"
+        )
     
     st.markdown("---")
     
-    # Reszta kosztów
+    # 4. Pozostałe koszty
     transport = st.number_input("Transport", value=1700)
     cena_lakieru = st.number_input("Cena lakierowania za element", value=500)
     ilosc_lakieru = st.number_input("Ilość elementów do lakierowania", value=0)
@@ -83,7 +85,7 @@ with st.sidebar:
     cena_sprzedazy = st.number_input("Cena sprzedaży auta", value=25000)
 
 # --- LOGIKA OBLICZEŃ ---
-stawka_akc = 0.031 if akcyza_typ == "do 2.0 l" else (0.186 if akcyza_typ == "powyżej 2.0 l" else 0)
+stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
 wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
 koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
@@ -121,7 +123,8 @@ with t1:
         <div class='row'><span>Samochód</span><span>{cena_pln_auto:,.2f} zł</span></div>
         <div class='row'><span>Akcyza</span><span>{wartosc_akcyzy:,.2f} zł</span></div>
         <div class='row'><span>Transport</span><span>{transport:,.2f} zł</span></div>
-        <div class='total-row'><span>SUMA</span><span>{suma_wydatki:,.2f} zł</span></div>
+        <div class='row'><span>Lakierowanie ({ilosc_lakieru} elem.)</span><span>{koszt_lakiernika:,.2f} zł</span></div>
+        <div class='total-row'><span>SUMA WYDATKÓW</span><span>{suma_wydatki:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
 with t2:
     st.markdown("<div class='table-header'>Przychody - podsumowanie</div>", unsafe_allow_html=True)
