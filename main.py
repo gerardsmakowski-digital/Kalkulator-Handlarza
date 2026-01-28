@@ -12,19 +12,7 @@ st.set_page_config(
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    
-    /* Stosujemy czcionkę Montserrat do konkretnych elementów zamiast gwiazdki (*), 
-       aby nie nadpisać ikon systemowych (Material Icons) */
-    html, body, [class*="st-"], div, span, p, h1, h2, h3, h4, label {
-        font-family: 'Montserrat', sans-serif !important;
-        
-    }
-.st-emotion-cache{font-family: Material Symbols Rounded !important;
-}
-
    
-    
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
 
