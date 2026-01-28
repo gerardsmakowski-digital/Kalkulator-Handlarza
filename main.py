@@ -93,9 +93,7 @@ koszt_prz = 150 if przeglad_opcja == "bez gazu" else 245
 suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_lakiernika + 
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
-# Wyliczenie "Pozostałych" kosztów (wszystko poza autem i akcyzą)
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-
 przychod_roznica = cena_sprzedazy - suma_wydatki
 
 if przychod_roznica > 0:
@@ -120,36 +118,28 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2, 3, 2])
 
 with col_left:
-    # Przygotowanie danych do lewego wykresu
     data_bars = {
         'Suma wydatków': suma_wydatki,
         'Samochód': finalna_cena_samochodu,
         'Akcyza': wartosc_akcyzy,
         'Pozostałe': pozostale_suma
     }
-    # Sortowanie od najwyższej do najniższej kwoty
     sorted_bars = dict(sorted(data_bars.items(), key=lambda item: item[1], reverse=True))
     
     fig_left = go.Figure(data=[
         go.Bar(
             x=list(sorted_bars.keys()), 
             y=list(sorted_bars.values()),
-            marker_color=['#FF0000', '#CC0000', '#990000', '#660000'] # Gradient czerwieni od lewej do prawej
+            marker_color=['#FF0000', '#CC0000', '#990000', '#660000']
         )
     ])
-    fig_left.update_layout(
-        height=300, 
-        margin=dict(t=20, b=20, l=0, r=0),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
-    )
+    fig_left.update_layout(height=300, margin=dict(t=20, b=20, l=0, r=0), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
     st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
     r1_1, r1_2 = st.columns(2)
-    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód (Zysk)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div><div class='metric-sub'>{procent_przychod:.1f}% ROI</div></div>", unsafe_allow_html=True)
-    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (Netto)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Zysk Brutto (Marża)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div><div class='metric-sub'>{procent_przychod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód Netto (Na rękę)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
 
     r2_1, r2_2, r2_3 = st.columns(3)
     r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
@@ -161,16 +151,23 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    fig = go.Figure(data=[go.Pie(labels=['Auto', 'Opłaty', 'Inne'], values=[finalna_cena_samochodu, wartosc_akcyzy + koszt_rej + koszt_prz, suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy], hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
-    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=300, showlegend=False)
-    st.plotly_chart(fig, use_container_width=True)
+    # WYKRES PODZIAŁU ZYSKU (Dochód vs Podatki)
+    fig_right = go.Figure(data=[go.Pie(
+        labels=['Dochód na czysto', 'Suma podatków'], 
+        values=[dochod_na_czysto, podatki_razem], 
+        hole=.4, 
+        marker_colors=['#28a745', '#cc0000'] # Zielony dla Ciebie, czerwony dla państwa
+    )])
+    fig_right.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=300, showlegend=True, legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5))
+    st.plotly_chart(fig_right, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# TABELE
+# TABELE (Pozostają bez zmian)
 t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - szczegóły</div>", unsafe_allow_html=True)
+    # ... (reszta tabeli wydatków)
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Samochód</span><span>{finalna_cena_samochodu:,.2f} zł</span></div>
         <div class='row'><span>Akcyza</span><span>{wartosc_akcyzy:,.2f} zł</span></div>
@@ -189,7 +186,7 @@ with t1:
 with t2:
     st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
-        <div class='row'><span>Przychód (Różnica)</span><span>{przychod_roznica:,.2f} zł</span></div>
+        <div class='row'><span>Zysk Brutto (Marża)</span><span>{przychod_roznica:,.2f} zł</span></div>
         <div class='row'><span>Dochód (Na czysto)</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
         <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
         <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
