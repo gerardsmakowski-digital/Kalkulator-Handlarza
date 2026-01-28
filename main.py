@@ -29,8 +29,22 @@ st.markdown("""
         color: white !important;
     }
 
-/* 1. Import czcionki z Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
+/* 1. Definicja czcionki bezpośrednio z Twojego repozytorium GitHub */
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-regular.woff2') format('woff2');
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-700.woff2') format('woff2');
+        font-weight: 700;
+    }
+    @font-face {
+        font-family: 'Montserrat';
+        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-800.woff2') format('woff2');
+        font-weight: 800;
+    }
 
 /* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
 html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
