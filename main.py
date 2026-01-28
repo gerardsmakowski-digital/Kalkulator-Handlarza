@@ -26,7 +26,7 @@ st.markdown("""
 
 /* 3. KLUCZOWA NAPRAWA: Przywrócenie fontu ikonowego, aby nie było napisu 'keyboard...' */
 [data-testid="stBaseButton-headerNoPadding"] span {
-    font-family: "Material Symbols Rounded" !important;
+    font-family: "Material Symbols Rounded" !important; color:#fff;
 }
 }
     footer { visibility: hidden !important; }
