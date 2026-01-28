@@ -14,7 +14,20 @@ st.set_page_config(
 st.markdown("""
     <style>
     
-   
+   /* Wyraźne przyciski plus/minus w polach numerycznych */
+    button[data-testid="stNumberInputStepUp"], 
+    button[data-testid="stNumberInputStepDown"] {
+        color: #111111 !important;
+        background-color: #eeeeee !important;
+        border-radius: 4px !important;
+    }
+
+    /* Efekt po najechaniu na plus/minus */
+    button[data-testid="stNumberInputStepUp"]:hover, 
+    button[data-testid="stNumberInputStepDown"]:hover {
+        background-color: #cc0000 !important;
+        color: white !important;
+    }
 
 /* 1. Import czcionki z Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
