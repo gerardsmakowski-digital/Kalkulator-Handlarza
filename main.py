@@ -210,7 +210,7 @@ with col_right:
             marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
         )
     ])
-   fig_right.update_layout(
+    fig_right.update_layout(
     title=dict(
         text="Wynik finansowy (PLN)", 
         x=0.5, 
@@ -222,7 +222,7 @@ with col_right:
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)'
 )
-    )
+    
     st.plotly_chart(fig_right, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
