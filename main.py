@@ -14,8 +14,20 @@ st.set_page_config(
 st.markdown("""
     <style>
    
-   .st-emotion-cache-5r6ut5 {font-family: "Material Symbols Rounded"; color: #fff;}
-   
+   /* 1. Gdy sidebar jest OTWARTY (ikona na czarnym tle sidebaru) */
+[data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] {
+    color: white !important;
+}
+
+/* 2. Gdy sidebar jest ZAMKNIĘTY (ikona na białym tle strony/headera) */
+[data-testid="stHeader"] [data-testid="stBaseButton-headerNoPadding"] {
+    color: #111111 !important;
+}
+
+/* Opcjonalnie: Naprawa czcionki ikony, jeśli Montserrat ją psuje */
+[data-testid="stBaseButton-headerNoPadding"] span {
+    font-family: "fallback" !important; /* Przywraca systemowy font ikon */
+}
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
 
