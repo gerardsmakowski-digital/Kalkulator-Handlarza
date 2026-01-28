@@ -169,7 +169,7 @@ with col_left:
         title=dict(
             text="Struktura ceny sprzedaży", 
             x=0.5,
-            font=dict(family="Montserrat", size=16;text-align: center)
+            font=dict(family="Montserrat", size=16; text-align: center;)
         ),
         font=dict(family="Montserrat"),
         margin=dict(t=80, b=50, l=10, r=10), 
