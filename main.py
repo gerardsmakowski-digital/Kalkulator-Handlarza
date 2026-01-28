@@ -9,7 +9,15 @@ st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    * { font-family: 'Montserrat', sans-serif !important; }
+   html, body, [class*="css"] {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+/* przywracamy font ikon */
+.material-icons, [class^="material-icons"], [class*="material-icons"] {
+    font-family: 'Material Icons' !important;
+}
+
     header, footer, #MainMenu { visibility: hidden !important; }
 
     /* Sidebar */
