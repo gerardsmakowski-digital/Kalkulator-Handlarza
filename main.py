@@ -5,23 +5,37 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- KOMPLEKSOWY CSS (Wymuszenie czcionki na każdym elemencie) ---
+# --- SIŁOWY CSS (Wymuszenie Montserrat na absolutnie wszystkim) ---
 st.markdown("""
     <style>
+    /* 1. Import czcionki */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     
-    /* Globalne wymuszenie czcionki dla wszystkich elementów HTML i Streamlit */
-    html, body, [class*="css"], .stMarkdown, p, span, label, input, button, select, textarea {
+    /* 2. Globalne uderzenie we wszystkie tagi */
+    * {
         font-family: 'Montserrat', sans-serif !important;
     }
 
-    /* Specyficzne kontenery Streamlit, które czasem używają własnych czcionek */
-    .stNumberInput input, .stSelectbox, .stButton, .stCheckbox, .stRadio label {
+    /* 3. Uderzenie w specyficzne klasy Streamlit (wejścia, radio, etykiety) */
+    .stMarkdown, .stNumberInput, .stRadio, .stCheckbox, .stSelectbox, div, span, label, input, button {
         font-family: 'Montserrat', sans-serif !important;
     }
-    
-    [data-testid="stSidebar"] { background-color: #111111; color: white !important; border-right: 1px solid #333; }
-    [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
+
+    /* 4. Naprawa czcionki wewnątrz pól numerycznych i ich etykiet */
+    input[type="number"], .st-bc, .st-ae, .st-af, .st-ag {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* Ciemny sidebar */
+    [data-testid="stSidebar"] { 
+        background-color: #111111; 
+        color: white !important; 
+        border-right: 1px solid #333; 
+    }
+    [data-testid="stSidebar"] label, [data-testid="stSidebar"] p, [data-testid="stSidebar"] span { 
+        color: #ffffff !important; 
+        font-family: 'Montserrat', sans-serif !important;
+    }
 
     /* Karty i tabele */
     .metric-card { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #ddd; text-align: center; margin-bottom: 10px; }
@@ -34,7 +48,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- SIDEBAR (Kolejność ze screena) ---
 with st.sidebar:
     st.image("logo gerard s białe .png", width=180)
     st.markdown("<br>", unsafe_allow_html=True)
@@ -49,32 +63,32 @@ with st.sidebar:
     cena_do_akcyzy = st.number_input("Cena auta do akcyzy", value=float(cena_pln_auto))
     
     st.markdown("---")
-    st.markdown("Stawka Akcyzy")
-    akcyza_opcja = st.radio("Wybierz akcyzę", ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], index=1, label_visibility="collapsed")
+    st.markdown("**Stawka Akcyzy**")
+    akcyza_opcja = st.radio("akcyza", ["bez akcyzy", "do 2.0 l", "powyżej 2.0 l"], index=1, label_visibility="collapsed")
     
     st.markdown("---")
     col_op1, col_op2 = st.columns(2)
     with col_op1:
         st.markdown("**Rejestracja**")
-        rejestracja_check = st.checkbox("Zaznacz rej", value=True, label_visibility="collapsed")
+        rejestracja_check = st.checkbox("Rej", value=True, label_visibility="collapsed")
     with col_op2:
         st.markdown("**Przegląd**")
-        przeglad_opcja = st.radio("Rodzaj przeglądu", ["bez gazu", "z gazem"], index=0, label_visibility="collapsed")
+        przeglad_opcja = st.radio("Przeg", ["bez gazu", "z gazem"], index=0, label_visibility="collapsed")
     
     st.markdown("---")
     transport = st.number_input("Transport", value=1700)
     cena_lakieru = st.number_input("Cena lakierowania za element", value=500)
-    ilosc_lakieru = st.number_input("Ilość elementów do lakierowania", value=0)
+    ilosc_lakieru = st.number_input("Ilość elementów", value=0)
     koszt_lakiernika = cena_lakieru * ilosc_lakieru
     
     cena_czesci = st.number_input("Cena części", value=300)
     mechanik = st.number_input("Mechanik", value=700)
     myjnia = st.number_input("Myjnia", value=200)
     ogloszenia = st.number_input("Ogłoszenia", value=300)
-    pozostale = st.number_input("Pozostałe (tłumaczenia itp.)", value=200)
+    pozostale = st.number_input("Pozostałe", value=200)
     
     st.markdown("---")
-    cena_sprzedazy = st.number_input("Cena sprzedaży auta", value=25000)
+    cena_sprzedazy = st.number_input("CENA SPRZEDAŻY AUTA", value=25000)
 
 # --- OBLICZENIA ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
