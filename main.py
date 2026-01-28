@@ -167,7 +167,7 @@ with col_left:
     )])
     fig_left.update_layout(
         title={
-            'text': "Struktura ceny",
+            'text': "Struktura wydatków",
             'y': 0.9,
             'x': 0.5,
             'xanchor': 'center',
@@ -215,7 +215,7 @@ with col_right:
     ])
     fig_right.update_layout(
         title={
-            'text': "Podatki (PLN)",
+            'text': "Przychody i podatki",
             'y': 0.9,
             'x': 0.5,
             'xanchor': 'center',
