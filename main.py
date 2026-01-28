@@ -22,10 +22,7 @@ html, body, .stApp,
     font-family: 'Montserrat', sans-serif !important;
     span[class*="material"], i[class*="material"] {
     font-family: 'Material Icons' !important;
-
-
 }
-
 
     /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
     footer, #MainMenu { visibility: hidden !important; }
@@ -53,6 +50,13 @@ html, body, .stApp,
     .table-container { background: white; padding: 20px; border: 1px solid #eee; border-radius: 0 0 5px 5px; }
     .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 15px; }
     .total-row { display: flex; justify-content: space-between; padding-top: 12px; font-weight: bold; color: #28a745; font-size: 18px; border-top: 2px solid #eee; }
+    @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded");
+
+span[class*="material"],
+[data-testid="stIconMaterial"] span {
+    font-family: 'Material Symbols Rounded' !important;
+}
+
     </style>
     """, unsafe_allow_html=True)
 
