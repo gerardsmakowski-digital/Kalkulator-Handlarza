@@ -165,11 +165,17 @@ with col_left:
         marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
         textinfo='percent+label'
     )])
-    fig_left.update_layout(
-        title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
-        margin=dict(t=80, b=50, l=10, r=10), 
-        height=450, 
-        showlegend=False
+  fig_left.update_layout(
+    title=dict(
+        text="Struktura ceny sprzedaży", 
+        x=0.5, 
+        font=dict(family="Montserrat", size=18) # Dodaj tę linię
+    ),
+    font=dict(family="Montserrat"), # To zmieni czcionkę etykiet i legendy
+    margin=dict(t=80, b=50, l=10, r=10), 
+    height=450, 
+    showlegend=False
+)
     )
     st.plotly_chart(fig_left, use_container_width=True)
 
@@ -203,13 +209,18 @@ with col_right:
             marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
         )
     ])
-    fig_right.update_layout(
-        title=dict(text="Wynik finansowy (PLN)", x=0.5, y=0.95, xanchor='center'),
-        height=450, 
-        margin=dict(t=80, b=50, l=10, r=10),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
+   fig_right.update_layout(
+    title=dict(
+        text="Wynik finansowy (PLN)", 
+        x=0.5, 
+        font=dict(family="Montserrat", size=18) # Dodaj tę linię
+    ),
+    font=dict(family="Montserrat"), # To zmieni czcionkę osi i etykiet
+    height=450, 
+    margin=dict(t=80, b=50, l=10, r=10),
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)'
+)
     )
     st.plotly_chart(fig_right, use_container_width=True)
 
