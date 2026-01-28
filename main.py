@@ -23,11 +23,7 @@ st.markdown("""
 .st-emotion-cache{font-family: Material Symbols Rounded !important;
 }
 
-    /* UKRYCIE HEADERA I MENU */
-    header[data-testid="stHeader"] {
-        visibility: hidden;
-        height: 0px;
-    }
+   
     
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
