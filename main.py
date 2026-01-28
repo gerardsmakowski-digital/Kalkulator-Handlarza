@@ -13,7 +13,10 @@ st.set_page_config(
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    * { font-family: 'Montserrat', sans-serif !important; }
+    html, body, .stApp {
+    font-family: 'Montserrat', sans-serif;
+}
+
     
     /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
     footer, #MainMenu { visibility: hidden !important; }
