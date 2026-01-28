@@ -256,7 +256,7 @@ with col_right:
     
 )
     
-    with col_right:
+    
     # BLOKADA WYKRESU SŁUPKOWEGO (staticPlot: True wyłącza zoom i przesuwanie)
     st.plotly_chart(fig_right, use_container_width=True, config={'displayModeBar': False, 'staticPlot': True})
 
