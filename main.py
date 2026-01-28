@@ -21,7 +21,7 @@ st.markdown("""
 
 /* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
 [data-testid="stHeader"] [data-testid="stBaseButton-headerNoPadding"] {
-    color: #111111 !important;
+    color: #000 !important;
 }
 
 /* 3. KLUCZOWA NAPRAWA: Przywrócenie fontu ikonowego, aby nie było napisu 'keyboard...' */
