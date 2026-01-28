@@ -15,9 +15,6 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
     
-    /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
-    footer, #MainMenu { visibility: hidden !important; }
-
     /* Sidebar */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
