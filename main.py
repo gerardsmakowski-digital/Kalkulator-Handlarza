@@ -94,7 +94,7 @@ suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_laki
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-przychod_roznica = cena_sprzedazy - suma_wydatki
+przychod_roznica = cena_sprzedazy - suma_wydatki # Przychód
 
 if przychod_roznica > 0:
     vat_kwota = przychod_roznica * (0.23 / 1.23)
@@ -106,7 +106,7 @@ else:
     vat_kwota = podatek_dochodowy = skladka_zdrowotna = 0
 
 podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
-dochod_na_czysto = przychod_roznica - podatki_razem
+dochod_na_czysto = przychod_roznica - podatki_razem # Dochód
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
@@ -116,8 +116,8 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
-    # KOŁOWY PO LEWEJ: Struktura Ceny Sprzedaży (100% = Cena sprzedaży)
-    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód (Różnica)']
+    # KOŁOWY PO LEWEJ: Wyższe height, żeby nie ucinało
+    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
     values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
     
     fig_left = go.Figure(data=[go.Pie(
@@ -125,21 +125,20 @@ with col_left:
         values=values_pie, 
         hole=.4, 
         marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
-        textinfo='percent'
+        textinfo='percent+label'
     )])
     fig_left.update_layout(
-        title=dict(text="Struktura ceny sprzedaży", x=0.5, xanchor='center'),
-        margin=dict(t=50, b=0, l=0, r=0), 
-        height=350, 
-        showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.1, xanchor="center", x=0.5)
+        title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
+        margin=dict(t=80, b=50, l=10, r=10), 
+        height=450, 
+        showlegend=False # Etykiety są na wykresie, oszczędzamy miejsce na dole
     )
     st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
     r1_1, r1_2 = st.columns(2)
-    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód (Zysk)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (Netto)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
 
     r2_1, r2_2, r2_3 = st.columns(3)
     r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
@@ -151,10 +150,10 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    # SŁUPKOWY PO PRAWEJ: Podział Zysku i Podatków
+    # SŁUPKOWY PO PRAWEJ
     data_bars = {
-        'Przychód (Różnica)': przychod_roznica,
-        'Dochód (Na czysto)': dochod_na_czysto,
+        'Przychód': przychod_roznica,
+        'Dochód': dochod_na_czysto,
         'VAT': vat_kwota,
         'Podatek': podatek_dochodowy,
         'Zdrowotna': skladka_zdrowotna
@@ -168,9 +167,9 @@ with col_right:
         )
     ])
     fig_right.update_layout(
-        title=dict(text="Wynik finansowy (PLN)", x=0.5, xanchor='center'),
-        height=350, 
-        margin=dict(t=50, b=20, l=0, r=0),
+        title=dict(text="Wynik finansowy (PLN)", x=0.5, y=0.95, xanchor='center'),
+        height=450, 
+        margin=dict(t=80, b=50, l=10, r=10),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         yaxis=dict(showgrid=True, gridcolor='#f0f0f0')
@@ -179,7 +178,7 @@ with col_right:
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- TABELE (Przywrócone do oryginału) ---
+# --- TABELE ---
 t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - szczegóły</div>", unsafe_allow_html=True)
@@ -199,11 +198,11 @@ with t1:
     </div>""", unsafe_allow_html=True)
 
 with t2:
-    # Przywrócono oryginalne nazwy i układ tabeli
+    # Poprawione nazewnictwo: Przychód i Dochód
     st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
-        <div class='row'><span>Przychód (Różnica)</span><span>{przychod_roznica:,.2f} zł</span></div>
-        <div class='row'><span>Dochód (Na czysto)</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
+        <div class='row'><span>Przychód</span><span>{przychod_roznica:,.2f} zł</span></div>
+        <div class='row'><span>Dochód</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
         <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
         <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
         <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
