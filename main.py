@@ -20,9 +20,9 @@ st.markdown("""
 }
 
 /* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
-[data-testid="stExpandSidebarButton"] [data-testid="stBaseButton-headerNoPadding"] {
-    color: #000 !important;
-}
+[data-testid="stExpandSidebarButton"] [data-testid="stBaseButton-headerNoPadding"] span {
+    font-family: "Material Symbols Rounded" !important; color:#000;
+    }
 
 /* 3. KLUCZOWA NAPRAWA: Przywrócenie fontu ikonowego, aby nie było napisu 'keyboard...' */
 [data-testid="stBaseButton-headerNoPadding"] span {
