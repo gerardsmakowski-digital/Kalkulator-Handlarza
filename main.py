@@ -26,7 +26,7 @@ st.markdown("""
     [data-testid="stSidebar"] { 
         background-color: #111111; 
         color: white !important; 
-        border-right: 1px solid #333; 
+        border-right: 1px solid #5c5c5c; 
     }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { 
         color: #ffffff !important; 
@@ -45,6 +45,21 @@ st.markdown("""
     .total-row { display: flex; justify-content: space-between; padding: 12px 0; font-weight: bold; color: #28a745; font-size: 16px; }
     </style>
     """, unsafe_allow_html=True)
+/* Zmniejszenie odstępów między elementami w sidebarze */
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    gap: 0.4rem !important; /* Standardowo jest ok. 1rem, zmniejszamy o połowę */
+}
+
+/* Drastyczne zmniejszenie marginesów linii rozdzielających hr */
+[data-testid="stSidebar"] hr {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Podciągnięcie tekstów (akcyza, rej, przeg) bliżej pól */
+[data-testid="stSidebar"] .stMarkdown p {
+    margin-bottom: -5px !important;
+}
 
 # --- SIDEBAR ---
 with st.sidebar:
