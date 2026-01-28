@@ -12,7 +12,7 @@ st.set_page_config(
 # --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
-   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 /* Tekst w apce */
 html, body, .stApp,
@@ -24,8 +24,6 @@ html, body, .stApp,
 span[class*="material"], i[class*="material"] {
     font-family: 'Material Icons' !important;
 }
-
-
 
     
     /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
