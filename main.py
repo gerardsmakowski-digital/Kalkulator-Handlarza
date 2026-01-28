@@ -2,34 +2,35 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# DODANO: initial_sidebar_state="expanded" - to wymusi wysunięcie paska przy starcie
+# Konfiguracja strony
 st.set_page_config(
     page_title="Kalkulator Handlarza - Gerard S.", 
     layout="wide",
     initial_sidebar_state="expanded" 
 )
 
-# --- CSS (Stylizacja Montserrat + UI) ---
+# --- CSS (Naprawa czcionki Montserrat bez psucia ikon) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-/* Tekst w apce */
-html, body, .stApp,
-.stMarkdown, .stText, .stNumberInput, .stTextInput,
-.stSelectbox, .stRadio, .stCheckbox, .stButton,
-.stMetric, .stDataFrame, label, p, span, div {
-    font-family: 'Montserrat', sans-serif !important;
-}
-span[class*="material"], i[class*="material"] {
-    font-family: 'Material Icons' !important;
-}
-
     
-    /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
+    /* Nakładamy czcionkę na główne kontenery tekstowe zamiast używać gwiazdki (*) */
+    html, body, [class*="st-"] {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* OCHRONA IKON: Wymuszamy oryginalną czcionkę ikon tam, gdzie Streamlit jej potrzebuje */
+    .material-icons, 
+    [data-testid="stIcon"], 
+    [class^="StyledIcon"],
+    header svg,
+    button svg {
+        font-family: 'inherit' !important; /* Pozwala systemowi użyć domyślnej czcionki ikonowej */
+    }
+    
     footer, #MainMenu { visibility: hidden !important; }
 
-    /* Sidebar */
+    /* Sidebar Customization */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
@@ -58,7 +59,11 @@ span[class*="material"], i[class*="material"] {
 # --- SIDEBAR ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
-    st.image("logo gerard s białe .png", width=180)
+    # Wyświetlanie logo (obsługa błędu jeśli pliku nie ma)
+    try:
+        st.image("logo gerard s białe .png", width=180)
+    except:
+        st.markdown("### GERARD S")
     
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
     cena_eur = st.number_input("Cena auta w EURO", value=3550.0)
@@ -111,7 +116,7 @@ suma_wydatki = (finalna_cena_samochodu + wartosc_akcyzy + transport + koszt_laki
                 cena_czesci + mechanik + myjnia + ogloszenia + pozostale + koszt_rej + koszt_prz)
 
 pozostale_suma = suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy
-przychod_roznica = cena_sprzedazy - suma_wydatki # Przychód
+przychod_roznica = cena_sprzedazy - suma_wydatki 
 
 if przychod_roznica > 0:
     vat_kwota = przychod_roznica * (0.23 / 1.23)
@@ -123,7 +128,7 @@ else:
     vat_kwota = podatek_dochodowy = skladka_zdrowotna = 0
 
 podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
-dochod_na_czysto = przychod_roznica - podatki_razem # Dochód
+dochod_na_czysto = przychod_roznica - podatki_razem 
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
@@ -133,7 +138,6 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
-    # KOŁOWY PO LEWEJ
     labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
     values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
     
@@ -167,7 +171,6 @@ with col_mid:
     r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
-    # SŁUPKOWY PO PRAWEJ
     data_bars = {
         'Przychód': przychod_roznica,
         'Dochód': dochod_na_czysto,
@@ -219,8 +222,8 @@ with t2:
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Przychód</span><span>{przychod_roznica:,.2f} zł</span></div>
         <div class='row'><span>Dochód</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
-        <div class='row'><span>Vat (23% w marży)</span><span>{vat_kwota:,.2f} zł</span></div>
-        <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
-        <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
+        <div class='row'><span>Vat (marża)</span><span>{vat_kwota:,.2f} zł</span></div>
+        <div class='row'><span>Podatek dochodowy</span><span>{podatek_dochodowy:,.2f} zł</span></div>
+        <div class='row'><span>Składka zdrowotna</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
         <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
