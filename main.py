@@ -18,7 +18,7 @@ st.markdown("""
     button[data-testid="stNumberInputStepUp"], 
     button[data-testid="stNumberInputStepDown"] {
         color: #111111 !important;
-        background-color: #eeeeee !important;
+        background-color: #cc0000 !important;
         border-radius: 4px !important;
     }
 
