@@ -32,12 +32,12 @@ st.markdown("""
 /* 1. Definicja czcionki bezpośrednio z Twojego repozytorium GitHub */
     @font-face {
         font-family: 'Montserrat';
-        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-regular.woff2') format('woff2');
+        src: url('https://github.com/gerardsmakowski-digital/Kalkulator-Handlarza/blob/main/fonts/montserrat-v30-latin_latin-ext-regular.woff2') format('woff2');
         font-weight: 400;
     }
     @font-face {
         font-family: 'Montserrat';
-        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-700.woff2') format('woff2');
+        src: url('https://github.com/gerardsmakowski-digital/Kalkulator-Handlarza/blob/main/fonts/montserrat-v30-latin_latin-ext-700.woff2') format('woff2');
         font-weight: 700;
     }
     @font-face {
