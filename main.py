@@ -14,19 +14,20 @@ st.set_page_config(
 st.markdown("""
     <style>
    
-   /* 1. Gdy sidebar jest OTWARTY (ikona na czarnym tle sidebaru) */
+  /* 1. Gdy sidebar jest OTWARTY - biała ikona na czarnym tle */
 [data-testid="stSidebar"] [data-testid="stBaseButton-headerNoPadding"] {
     color: white !important;
 }
 
-/* 2. Gdy sidebar jest ZAMKNIĘTY (ikona na białym tle strony/headera) */
+/* 2. Gdy sidebar jest ZAMKNIĘTY - ciemna ikona na białym tle */
 [data-testid="stHeader"] [data-testid="stBaseButton-headerNoPadding"] {
     color: #111111 !important;
 }
 
-/* Opcjonalnie: Naprawa czcionki ikony, jeśli Montserrat ją psuje */
+/* 3. KLUCZOWA NAPRAWA: Przywrócenie fontu ikonowego, aby nie było napisu 'keyboard...' */
 [data-testid="stBaseButton-headerNoPadding"] span {
-    font-family: "fallback" !important; /* Przywraca systemowy font ikon */
+    font-family: "Material Symbols Rounded" !important;
+}
 }
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
