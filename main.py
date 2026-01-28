@@ -50,7 +50,7 @@ st.markdown("""
 with st.sidebar:
     # Podciągnięcie loga i usunięcie pustego miejsca
     st.markdown('<div style="margin-top: -80px;"></div>', unsafe_allow_html=True)
-    st.image("logo gerard s białe .png", width=180)
+    st.image("logo gerard s białe .png", width=220)
     st.markdown("<br>", unsafe_allow_html=True)
     
     kurs_eur = st.number_input("Kurs Euro", value=4.27, step=0.01)
