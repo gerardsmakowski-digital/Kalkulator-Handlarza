@@ -20,11 +20,6 @@ st.markdown("""
         font-family: 'Montserrat', sans-serif !important;
     }
 
-    /* UKRYCIE HEADERA I MENU */
-    header[data-testid="stHeader"] {
-        visibility: hidden;
-        height: 0px;
-    }
     
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
