@@ -13,6 +13,11 @@ st.set_page_config(
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+html, body, .stApp, .stApp *:not(.material-icons):not([class*="material-icons"]) {
+    font-family: 'Montserrat', sans-serif !important;
+}
    
   /* 1. Gdy sidebar jest OTWARTY - biała ikona na czarnym tle */
 .st-emotion-cache {
