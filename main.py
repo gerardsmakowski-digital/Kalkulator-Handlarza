@@ -207,7 +207,7 @@ with col_left:
     )
 
    
-    st.plotly_chart(fig_right, use_container_width=True)
+    st.plotly_chart(fig_left, use_container_width=True)
 
 with col_mid:
     r1_1, r1_2 = st.columns(2)
@@ -256,14 +256,7 @@ with col_right:
     
 )
     
-    st.plotly_chart(fig_right, use_container_width=True, config={
-    'staticPlot': False,           # Wykres nadal reaguje na najechanie myszką (tooltipy działają)
-    'scrollZoom': False,           # Wyłącza zoom kółkiem myszy
-    'doubleClick': 'reset',        # Resetuje widok przy dwukliku
-    'displayModeBar': False,       # Ukrywa cały pasek narzędzi (ten szary u góry)
-    'showAxisDragHandles': False,  # Wyłącza przesuwanie osi
-    'showAxisRangeEntryBoxes': False # Wyłącza edycję zakresu osi
-})
+    st.plotly_chart(fig_right, use_container_width=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
