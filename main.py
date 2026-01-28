@@ -12,8 +12,20 @@ st.set_page_config(
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     
+    /* Stosujemy czcionkę Montserrat do konkretnych elementów zamiast gwiazdki (*), 
+       aby nie nadpisać ikon systemowych (Material Icons) */
+    html, body, [class*="st-"], div, span, p, h1, h2, h3, h4, label {
+        font-family: 'Montserrat', sans-serif !important;
+    }
 
+    /* UKRYCIE HEADERA I MENU */
+    header[data-testid="stHeader"] {
+        visibility: hidden;
+        height: 0px;
+    }
+    
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
 
@@ -124,7 +136,7 @@ dochod_na_czysto = przychod_roznica - podatki_razem
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
 # --- PANEL GŁÓWNY ---
-st.markdown(f"<h1 style='text-align: center; margin-top: 30px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; margin-top: -30px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
 st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
