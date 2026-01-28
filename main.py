@@ -2,15 +2,21 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-# Konfiguracja strony
-st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
+# DODANO: initial_sidebar_state="expanded" - to wymusi wysunięcie paska przy starcie
+st.set_page_config(
+    page_title="Kalkulator Handlarza - Gerard S.", 
+    layout="wide",
+    initial_sidebar_state="expanded" 
+)
 
 # --- CSS (Stylizacja Montserrat + UI) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
     * { font-family: 'Montserrat', sans-serif !important; }
-    header, footer, #MainMenu { visibility: hidden !important; }
+    
+    /* Usunięto ukrywanie headera, żeby przycisk sidebaru był zawsze widoczny */
+    footer, #MainMenu { visibility: hidden !important; }
 
     /* Sidebar */
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
@@ -116,7 +122,7 @@ st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; fo
 col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
 
 with col_left:
-    # KOŁOWY PO LEWEJ: Wyższe height, żeby nie ucinało
+    # KOŁOWY PO LEWEJ
     labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
     values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
     
@@ -131,7 +137,7 @@ with col_left:
         title=dict(text="Struktura ceny sprzedaży", x=0.5, y=0.95, xanchor='center'),
         margin=dict(t=80, b=50, l=10, r=10), 
         height=450, 
-        showlegend=False # Etykiety są na wykresie, oszczędzamy miejsce na dole
+        showlegend=False
     )
     st.plotly_chart(fig_left, use_container_width=True)
 
@@ -198,7 +204,6 @@ with t1:
     </div>""", unsafe_allow_html=True)
 
 with t2:
-    # Poprawione nazewnictwo: Przychód i Dochód
     st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
         <div class='row'><span>Przychód</span><span>{przychod_roznica:,.2f} zł</span></div>
