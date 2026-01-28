@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 # Konfiguracja strony
 st.set_page_config(page_title="Kalkulator Handlarza - Gerard S.", layout="wide")
 
-# --- CSS (Zaktualizowane dla większej czcionki i wysokości) ---
+# --- CSS (Zoptymalizowane pod węższy środek i większe boki) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
@@ -17,36 +17,36 @@ st.markdown("""
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; }
     [data-testid="stSidebar"] hr { margin: 10px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
 
-    /* Dashboard Cards - ROZCIĄGNIĘTE */
+    /* Dashboard Cards - Węższe i wyraziste */
     .metric-card { 
         background-color: white; 
-        padding: 20px; 
+        padding: 15px; 
         border-radius: 10px; 
         box-shadow: 0 4px 6px rgba(0,0,0,0.07); 
         border: 1px solid #eee; 
         text-align: center; 
-        margin-bottom: 12px; 
-        min-height: 120px; /* Rozciągnięcie w dół */
+        margin-bottom: 10px; 
+        min-height: 110px; 
         display: flex; 
         flex-direction: column; 
         justify-content: center; 
     }
     .metric-label { 
-        font-size: 13px; /* Większa etykieta */
+        font-size: 11px; 
         color: #666; 
         font-weight: bold; 
         text-transform: uppercase; 
-        letter-spacing: 1px; 
-        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
     }
     .metric-value { 
-        font-size: 26px; /* Znacznie większa czcionka kwoty */
+        font-size: 22px; 
         color: #000; 
         font-weight: 800; 
-        margin: 5px 0; 
+        margin: 2px 0; 
     }
     .metric-sub { 
-        font-size: 14px; 
+        font-size: 12px; 
         color: #28a745; 
         font-weight: bold; 
     }
@@ -59,7 +59,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- SIDEBAR ---
+# --- SIDEBAR (Bez zmian w logice) ---
 with st.sidebar:
     st.markdown('<div style="margin-top: -50px;"></div>', unsafe_allow_html=True)
     st.image("logo gerard s białe .png", width=180)
@@ -102,7 +102,7 @@ with st.sidebar:
     st.markdown("---")
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY", value=25000)
 
-# --- OBLICZENIA (Zsynchronizowane z arkuszem) ---
+# --- OBLICZENIA (Synchronizacja z Twoim arkuszem) ---
 stawka_akc = 0.031 if akcyza_opcja == "do 2.0 l" else (0.186 if akcyza_opcja == "powyżej 2.0 l" else 0)
 wartosc_akcyzy = cena_do_akcyzy * stawka_akc
 koszt_rej = 162 if rejestracja_check else 0
@@ -128,39 +128,40 @@ dochod_na_czysto = przychod_roznica - podatki_razem
 procent_przychod = (przychod_roznica / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
-# --- PANEL GŁÓWNY ---
+# --- PANEL GŁÓWNY (Nowe proporcje: 2 | 3 | 2) ---
 st.markdown(f"<h1 style='text-align: center; margin-top: -50px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 20px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
 
-# GŁÓWNY RZĄD DASHBOARDU
-col_left, col_mid, col_right = st.columns([1.5, 4, 1.5])
+col_left, col_mid, col_right = st.columns([2, 3, 2])
 
 with col_left:
+    st.markdown("<p style='text-align:center; font-weight:bold; color:#666; font-size:12px;'>STRUKTURA KOSZTÓW I ZYSKU</p>", unsafe_allow_html=True)
     st.bar_chart(pd.DataFrame({'PLN': [finalna_cena_samochodu, wartosc_akcyzy, transport, przychod_roznica]}, index=['Auto', 'Akcyza', 'Trans', 'Zysk']))
 
 with col_mid:
-    # Rząd 1: Przychód i Dochód (Najważniejsze)
+    # Rząd 1: Przychód i Dochód
     r1_1, r1_2 = st.columns(2)
-    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód (Zysk)</div><div class='metric-value' style='color:#28a745; font-size:32px;'>{przychod_roznica:,.2f} zł</div><div class='metric-sub'>{procent_przychod:.1f}% ROI</div></div>", unsafe_allow_html=True)
-    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (Netto)</div><div class='metric-value' style='color:#28a745; font-size:32px;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód (Zysk)</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div><div class='metric-sub'>{procent_przychod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (Netto)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
 
     # Rząd 2: VAT, Dochodowy, Zdrowotna
     r2_1, r2_2, r2_3 = st.columns(3)
-    r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r2_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochodowy (19%)</div><div class='metric-value'>{podatek_dochodowy:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r2_3.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value'>{skladka_zdrowotna:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r2_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatek</div><div class='metric-value' style='font-size:16px;'>{podatek_dochodowy:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r2_3.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:16px;'>{skladka_zdrowotna:,.2f} zł</div></div>", unsafe_allow_html=True)
 
     # Rząd 3: Inwestycja i Podatki razem
     r3_1, r3_2 = st.columns(2)
-    r3_1.markdown(f"<div class='metric-card'><div class='metric-label'>Inwestycja Total</div><div class='metric-value'>{suma_wydatki:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r3_1.markdown(f"<div class='metric-card'><div class='metric-label'>Inwestycja Total</div><div class='metric-value' style='font-size:18px;'>{suma_wydatki:,.2f} zł</div></div>", unsafe_allow_html=True)
+    r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
 
 with col_right:
+    st.markdown("<p style='text-align:center; font-weight:bold; color:#666; font-size:12px;'>PODZIAŁ WYDATKÓW</p>", unsafe_allow_html=True)
     fig = go.Figure(data=[go.Pie(labels=['Auto', 'Opłaty', 'Inne'], values=[finalna_cena_samochodu, wartosc_akcyzy + koszt_rej + koszt_prz, suma_wydatki - finalna_cena_samochodu - wartosc_akcyzy], hole=.4, marker_colors=['#cc0000', '#111111', '#dddddd'])])
-    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=350, showlegend=False)
+    fig.update_layout(margin=dict(t=0, b=0, l=0, r=0), height=300, showlegend=False)
     st.plotly_chart(fig, use_container_width=True)
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # TABELE PODSUMOWUJĄCE
 t1, t2 = st.columns(2)
