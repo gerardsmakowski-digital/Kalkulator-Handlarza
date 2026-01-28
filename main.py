@@ -9,40 +9,39 @@ st.set_page_config(
     initial_sidebar_state="expanded" 
 )
 
-
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
     <style>
+    /* 1. Import czcionki z Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
+
+    /* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
+    html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* 3. WYJĄTEK: Przywrócenie fontu ikonowego dla przycisków sidebaru */
+    [data-testid="stBaseButton-headerNoPadding"] span, 
+    [data-testid="stExpandSidebarButton"] span {
+        font-family: "Material Symbols Rounded" !important;
+    }
+
+    /* 4. Kolory ikon zależnie od stanu (otwarty/zamknięty) */
+    [data-testid="stBaseButton-headerNoPadding"] span {
+        color: #ffffff !important; 
+    }
+    [data-testid="stExpandSidebarButton"] span {
+        color: #111111 !important; 
+    }
     
-   
-
-/* 1. Import czcionki z Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
-
-/* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
-html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
-    font-family: 'Montserrat', sans-serif !important;
-}
-
-/* 3. WYJĄTEK: Przywrócenie fontu ikonowego dla przycisków sidebaru */
-/* To zapobiega wyświetlaniu napisów typu 'keyboard_arrow_left' */
-[data-testid="stBaseButton-headerNoPadding"] span, 
-[data-testid="stExpandSidebarButton"] span {
-    font-family: "Material Symbols Rounded" !important;
-}
-
-/* 4. Kolory ikon zależnie od stanu (otwarty/zamknięty) */
-[data-testid="stBaseButton-headerNoPadding"] span {
-    color: #ffffff !important; /* Biała ikona wewnątrz paska */
-}
-
-[data-testid="stExpandSidebarButton"] span {
-    color: #111111 !important; /* Ciemna ikona na zewnątrz paska */
-}
     footer { visibility: hidden !important; }
     #MainMenu { visibility: hidden !important; }
 
-    /* Poprawka odstępu po usunięciu headera, żeby tytuł nie był przyklejony do góry */
+    header[data-testid="stHeader"] {
+        visibility: hidden;
+        height: 0px;
+    }
+
     .block-container {
         padding-top: 2rem !important;
     }
@@ -51,8 +50,6 @@ html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
     [data-testid="stSidebar"] { background-color: #111111; color: white !important; }
     [data-testid="stSidebar"] label, [data-testid="stSidebar"] p { color: #ffffff !important; font-size: 14px !important; }
     [data-testid="stSidebar"] hr { margin: 15px 0 !important; border-top: 1px solid rgba(255, 255, 255, 0.2) !important; }
-    
-    /* Kolor ikony zamykania sidebaru */
     [data-testid="stSidebar"] button { color: white !important; }
 
     /* Dashboard Cards */
@@ -68,7 +65,7 @@ html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
 
     /* Tables */
     .table-header { background-color: #cc0000; color: white; padding: 12px; font-weight: bold; border-radius: 5px 5px 0 0; font-size: 16px; }
-    .table-container { background: white; padding: 20px; border: 1px solid #eee; border-radius: 0 0 5px 5px; }
+    .table-container { background: white; padding: 20px; border: 1px solid #eee; border-radius: 0 0 5px 5px; margin-bottom: 20px; }
     .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0; color: #333; font-size: 15px; }
     .total-row { display: flex; justify-content: space-between; padding-top: 12px; font-weight: bold; color: #28a745; font-size: 18px; border-top: 2px solid #eee; }
     </style>
@@ -121,11 +118,9 @@ with st.sidebar:
     pozostale = st.number_input("Pozostałe", value=200)
     
     st.markdown("---")
-   # ... (wcześniejszy kod sidebaru)
     cena_sprzedazy = st.number_input("CENA SPRZEDAŻY AUTA", value=35000)
 
-    # DODATEK NA SAMYM DOLE:
-    st.markdown("---") # Linia oddzielająca
+    st.markdown("---")
     st.markdown(
         """
         <div style='text-align: center; padding-top: 20px;'>
@@ -160,93 +155,51 @@ podatki_razem = vat_kwota + podatek_dochodowy + skladka_zdrowotna
 dochod_na_czysto = przychod_roznica - podatki_razem 
 procent_dochod = (dochod_na_czysto / finalna_cena_samochodu * 100) if finalna_cena_samochodu > 0 else 0
 
-# --- PANEL GŁÓWNY ---
-st.markdown(f"<h1 style='text-align: center; margin-top: 50px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
-st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 18px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
-
-col_left, col_mid, col_right = st.columns([2.5, 3, 2.5])
-
-with col_left:
-    labels_pie = ['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód']
-    values_pie = [finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica]
-    
-    fig_left = go.Figure(data=[go.Pie(
-        labels=labels_pie, 
-        values=values_pie, 
-        hole=.4, 
-        marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
-        textinfo='percent+label'
-    )])
-    fig_left.update_layout(
-        title={
-            'text': "Struktura wydatków",
-            'y': 0.9,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
-        },
-        font=dict(family="Montserrat"),
-        height=400,
-        showlegend=False,
-        margin=dict(t=80, b=10, l=10, r=10)
-    )
-
-   
-    st.plotly_chart(fig_left, use_container_width=True)
-
-with col_mid:
-    r1_1, r1_2 = st.columns(2)
-    r1_1.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r1_2.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
-
-    r2_1, r2_2, r2_3 = st.columns(3)
-    r2_1.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r2_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatek</div><div class='metric-value' style='font-size:16px;'>{podatek_dochodowy:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r2_3.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:16px;'>{skladka_zdrowotna:,.2f} zł</div></div>", unsafe_allow_html=True)
-
-    r3_1, r3_2 = st.columns(2)
-    r3_1.markdown(f"<div class='metric-card'><div class='metric-label'>Inwestycja Total</div><div class='metric-value' style='font-size:18px;'>{suma_wydatki:,.2f} zł</div></div>", unsafe_allow_html=True)
-    r3_2.markdown(f"<div class='metric-card'><div class='metric-label'>Podatki Razem</div><div class='metric-value' style='color:#cc0000; font-size:18px;'>{podatki_razem:,.2f} zł</div></div>", unsafe_allow_html=True)
-
-with col_right:
-    data_bars = {
-        'Przychód': przychod_roznica,
-        'Dochód': dochod_na_czysto,
-        'VAT': vat_kwota,
-        'Podatek': podatek_dochodowy,
-        'Zdrowotna': skladka_zdrowotna
-    }
-    
-    fig_right = go.Figure(data=[
-        go.Bar(
-            x=list(data_bars.keys()), 
-            y=list(data_bars.values()),
-            marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
-        )
-    ])
-    fig_right.update_layout(
-        title={
-            'text': "Przychody i podatki",
-            'y': 0.9,
-            'x': 0.5,
-            'xanchor': 'center',
-            'yanchor': 'top',
-            'font': {'family': "Montserrat", 'size': 18, 'weight': 800}
-        },
-        font=dict(family="Montserrat"),
-        height=400,
-        margin=dict(t=80, b=10, l=10, r=10),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)'
-    
+# --- DEFINICJA WYKRESÓW (zanim zostaną wyświetlone) ---
+# Wykres Lewy
+fig_left = go.Figure(data=[go.Pie(
+    labels=['Samochód', 'Akcyza', 'Pozostałe koszty', 'Przychód'], 
+    values=[finalna_cena_samochodu, wartosc_akcyzy, pozostale_suma, przychod_roznica], 
+    hole=.4, marker_colors=['#cc0000', '#990000', '#dddddd', '#28a745'],
+    textinfo='percent+label'
+)])
+fig_left.update_layout(
+    title={'text': "Struktura wydatków", 'y': 0.9, 'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 18, 'weight': 800}},
+    font=dict(family="Montserrat"), height=400, showlegend=False, margin=dict(t=80, b=10, l=10, r=10)
 )
-    
-    st.plotly_chart(fig_right, use_container_width=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
+# Wykres Prawy
+data_bars = {'Przychód': przychod_roznica, 'Dochód': dochod_na_czysto, 'VAT': vat_kwota, 'Podatek': podatek_dochodowy, 'Zdrowotna': skladka_zdrowotna}
+fig_right = go.Figure(data=[go.Bar(
+    x=list(data_bars.keys()), y=list(data_bars.values()),
+    marker_color=['#28a745', '#1e7e34', '#cc0000', '#990000', '#660000']
+)])
+fig_right.update_layout(
+    title={'text': "Przychody i podatki", 'y': 0.9, 'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 18, 'weight': 800}},
+    font=dict(family="Montserrat"), height=400, margin=dict(t=80, b=10, l=10, r=10),
+    paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)'
+)
 
-# --- TABELE ---
+# --- PANEL GŁÓWNY (Układ Mobile-First) ---
+st.markdown(f"<h1 style='text-align: center; margin-top: 20px; font-weight: 800;'>Kalkulator Handlarza</h1>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align: center; color: #666; margin-bottom: 30px; font-size: 16px;'>by Gerard S Digital Agency</p>", unsafe_allow_html=True)
+
+# 1. KARTY WYNIKÓW (Góra)
+col_m1, col_m2 = st.columns(2)
+with col_m1:
+    st.markdown(f"<div class='metric-card'><div class='metric-label'>Przychód</div><div class='metric-value' style='color:#28a745;'>{przychod_roznica:,.2f} zł</div></div>", unsafe_allow_html=True)
+with col_m2:
+    st.markdown(f"<div class='metric-card'><div class='metric-label'>Dochód (na czysto)</div><div class='metric-value' style='color:#28a745;'>{dochod_na_czysto:,.2f} zł</div><div class='metric-sub'>{procent_dochod:.1f}% ROI</div></div>", unsafe_allow_html=True)
+
+col_m3, col_m4, col_m5 = st.columns(3)
+with col_m3:
+    st.markdown(f"<div class='metric-card'><div class='metric-label'>VAT</div><div class='metric-value' style='font-size:16px;'>{vat_kwota:,.2f} zł</div></div>", unsafe_allow_html=True)
+with col_m4:
+    st.markdown(f"<div class='metric-card'><div class='metric-label'>Podatek</div><div class='metric-value' style='font-size:16px;'>{podatek_dochodowy:,.2f} zł</div></div>", unsafe_allow_html=True)
+with col_m5:
+    st.markdown(f"<div class='metric-card'><div class='metric-label'>Zdrowotna</div><div class='metric-value' style='font-size:16px;'>{skladka_zdrowotna:,.2f} zł</div></div>", unsafe_allow_html=True)
+
+# 2. TABELE (Środek)
 t1, t2 = st.columns(2)
 with t1:
     st.markdown("<div class='table-header'>Wydatki - szczegóły</div>", unsafe_allow_html=True)
@@ -254,24 +207,26 @@ with t1:
         <div class='row'><span>Samochód</span><span>{finalna_cena_samochodu:,.2f} zł</span></div>
         <div class='row'><span>Akcyza</span><span>{wartosc_akcyzy:,.2f} zł</span></div>
         <div class='row'><span>Transport</span><span>{transport:,.2f} zł</span></div>
-        <div class='row'><span>Lakiernik</span><span>{koszt_lakiernika:,.2f} zł</span></div>
-        <div class='row'><span>Mechanik</span><span>{mechanik:,.2f} zł</span></div>
-        <div class='row'><span>Części</span><span>{cena_czesci:,.2f} zł</span></div>
-        <div class='row'><span>Przegląd</span><span>{koszt_prz:,.2f} zł</span></div>
-        <div class='row'><span>Rejestracja</span><span>{koszt_rej:,.2f} zł</span></div>
-        <div class='row'><span>Myjnia</span><span>{myjnia:,.2f} zł</span></div>
-        <div class='row'><span>Ogłoszenia</span><span>{ogloszenia:,.2f} zł</span></div>
-        <div class='row'><span>Pozostałe</span><span>{pozostale:,.2f} zł</span></div>
+        <div class='row'><span>Naprawy i części</span><span>{koszt_lakiernika + mechanik + cena_czesci:,.2f} zł</span></div>
+        <div class='row'><span>Opłaty (rej/prz)</span><span>{koszt_rej + koszt_prz:,.2f} zł</span></div>
+        <div class='row'><span>Inne (ogł/myj)</span><span>{ogloszenia + myjnia + pozostale:,.2f} zł</span></div>
         <div class='total-row' style='color:#000;'><span>SUMA WYDATKÓW</span><span>{suma_wydatki:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
 
 with t2:
-    st.markdown("<div class='table-header'>Przychody - szczegóły</div>", unsafe_allow_html=True)
+    st.markdown("<div class='table-header'>Podatki i Koszt Total</div>", unsafe_allow_html=True)
     st.markdown(f"""<div class='table-container'>
-        <div class='row'><span>Przychód</span><span>{przychod_roznica:,.2f} zł</span></div>
-        <div class='row'><span>Dochód</span><span style='color:#28a745; font-weight:bold;'>{dochod_na_czysto:,.2f} zł</span></div>
+        <div class='row'><span>Inwestycja Total</span><span style='font-weight:bold;'>{suma_wydatki:,.2f} zł</span></div>
         <div class='row'><span>Vat (marża)</span><span>{vat_kwota:,.2f} zł</span></div>
-        <div class='row'><span>Podatek dochodowy 19%</span><span>{podatek_dochodowy:,.2f} zł</span></div>
-        <div class='row'><span>Składka zdrowotna 4,90%</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
+        <div class='row'><span>Podatek dochodowy</span><span>{podatek_dochodowy:,.2f} zł</span></div>
+        <div class='row'><span>Składka zdrowotna</span><span>{skladka_zdrowotna:,.2f} zł</span></div>
         <div class='total-row' style='color:#cc0000;'><span>Podatki razem</span><span>{podatki_razem:,.2f} zł</span></div>
     </div>""", unsafe_allow_html=True)
+
+# 3. WYKRESY (Dół)
+st.markdown("<br>", unsafe_allow_html=True)
+c_graph1, c_graph2 = st.columns(2)
+with c_graph1:
+    st.plotly_chart(fig_left, use_container_width=True)
+with c_graph2:
+    st.plotly_chart(fig_right, use_container_width=True)
