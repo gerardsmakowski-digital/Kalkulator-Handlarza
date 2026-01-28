@@ -12,6 +12,9 @@ st.set_page_config(
 
 # --- CSS (Ukrycie headera i naprawa czcionek) ---
 st.markdown("""
+<link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
     
    /* Wyraźne przyciski plus/minus w polach numerycznych */
@@ -28,24 +31,7 @@ st.markdown("""
         background-color: #cc0000 !important;
         color: white !important;
     }
-
-/* 1. Definicja czcionki bezpośrednio z Twojego repozytorium GitHub */
-    @font-face {
-        font-family: 'Montserrat';
-        src: url('https://github.com/gerardsmakowski-digital/Kalkulator-Handlarza/blob/main/fonts/montserrat-v30-latin_latin-ext-regular.woff2') format('woff2');
-        font-weight: 400;
-    }
-    @font-face {
-        font-family: 'Montserrat';
-        src: url('https://github.com/gerardsmakowski-digital/Kalkulator-Handlarza/blob/main/fonts/montserrat-v30-latin_latin-ext-700.woff2') format('woff2');
-        font-weight: 700;
-    }
-    @font-face {
-        font-family: 'Montserrat';
-        src: url('https://raw.githubusercontent.com/gerardsmakowski-digital/Kalkulator-Handlarza/main/fonts/montserrat-v30-latin-latin-ext-800.woff2') format('woff2');
-        font-weight: 800;
-    }
-
+    
 /* 2. Ustawienie Montserrat dla wszystkich tekstów i kontrolek */
 html, body, [class*="st-"], div, p, h1, h2, h3, h4, label, span {
     font-family: 'Montserrat', sans-serif !important;
